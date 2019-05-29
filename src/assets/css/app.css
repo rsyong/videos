@@ -1,0 +1,126 @@
+.flex{
+	display: flex;
+	flex: 1;
+}
+.flex-column{
+	flex-direction: column;
+}
+.flex1{
+	flex: 1;
+}
+.just-between{
+	justify-content: space-between;
+}
+.just-center{
+	justify-content: center;
+}
+.align-center{
+	align-items: center;
+}
+.back{
+	background-color: rgba(0,0,0,.4);
+}
+.color-fff{
+	color: #fff;
+}
+.mt-10{
+	margin-top: 10px;
+}
+.ml-10{
+	margin-left: 10px;
+}
+input[type='checkbox']{
+	background: transparent;
+}
+ul{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+ul li{
+    list-style: none;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    line-height: 36px;
+    padding: 0 10px;
+}
+
+
+.main{
+	position: fixed;top: 0;left: 0;width: 100%;height: 100%;background-image: url(../../../static/img/bg.jpg);background-size: 100% 100%;padding:  10px;box-sizing: border-box
+	/*display: flex;flex: 1;justify-content: center;align-items: center;*/
+}
+.gs-title{
+	color: #fff;
+	margin-bottom: 15px;
+}
+.gs-live-in{
+	padding: 0px 5px;text-align: center;margin-right: 8px;background: #bc0a0a;color: #fff;
+}
+.content{
+	
+}
+.content-left{
+	width: 25%;
+}
+.content-right{
+    width: 25%;
+}
+.content-left-top{
+	height: 15rem;
+}
+.content-left-bottom{
+	height: 30rem;
+}
+.content-center{
+	flex: 1;
+	
+}
+.content-bottom {
+	height: 60px;
+}
+.gs-userlist-count{
+	height: 33px;
+    line-height: 33px;
+    padding: 0 10px;
+    background: rgba(0,0,0,.2);
+    border-bottom: 1px solid rgba(255,255,255,.15);
+    font-size: 12px;
+}
+.quiz{
+	border-top :1px solid rgba(255,255,255,.15);
+	height: 80px;
+	font-size: 12px;
+	padding: 5px;
+	box-sizing: border-box;
+}
+.quiz textarea{
+	font: 12px "Microsoft YaHei";
+    height: 33px;
+    resize: none;
+    overflow: auto;
+    outline: none;
+    padding: 2px;
+    padding-right: 20%;
+    min-height: 33px;
+    background: transparent;
+    color: #fff;
+    vertical-align:bottom;
+    width: 55%;
+}
+.quiz .btn{
+	width: 45px;
+    height: 40px;
+    line-height: 40px;
+    border: 0;
+    cursor: pointer;
+    outline: none;
+    border: 0px;
+    text-align: center;
+    font: 12px/1.5 Simsun, Tahoma, Helvetica, Arial;
+    background-color: #0298d4;
+    color: white;
+}
+.stutent-list{
+    overflow-y: scroll;
+}
