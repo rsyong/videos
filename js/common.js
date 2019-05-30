@@ -46,3 +46,6 @@ var API="http://lyg.goluckin.com/index.php/api/";
 	    	$(".openFlash").show();
 	    }
 })();
+function getLocalTime(nS) {     
+   return new Date(parseInt(nS) * 1000).toLocaleString().replace(/:\d{1,2}$/,' ');     
+}

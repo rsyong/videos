@@ -37,14 +37,26 @@ ul{
     padding: 0;
     width: 100%;
 }
-ul li{
+#subList li{
     list-style: none;
     color: #fff;
     padding:10px;
     box-sizing: border-box;
 }
-ul li .title{
+#subList li .title{
 	font-size: 14px;
+}
+#subList-online li img{
+	width: 30px;
+	vertical-align: middle;
+	margin-right: 5px;
+}
+#subList-online li{
+	padding: 5px 10px;
+	color: #fff;
+	list-style: none;
+	box-sizing: border-box;
+	cursor: pointer;
 }
 .title_content{
 	background: rgb(243,245,246);
@@ -138,5 +150,29 @@ ul li .title{
 }
 .stutent-list{
     overflow-y: scroll;
-    max-height: 36rem;;
+    max-height: 36rem;
+}
+.subList-online{
+	overflow-y: scroll;
+}
+::-webkit-scrollbar-track-piece {
+background-color:#1F2C38;
+}
+::-webkit-scrollbar {
+width:9px;
+height:9px;
+
+}
+::-webkit-scrollbar-thumb {
+background-color:#0298D4;
+background-clip:padding-box;
+min-height:28px;
+border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+background-color:#bbb;
+}
+.vjs-paused .vjs-big-play-button,
+.vjs-paused.vjs-has-started .vjs-big-play-button {
+    display: block;
 }
