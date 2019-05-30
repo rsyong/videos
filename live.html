@@ -4,7 +4,6 @@
 	<head>
 		<meta charset="utf-8" />
 		<title></title>
-		<!--http://lyg.goluckin.com/themes/-->
 		<!--<link rel="stylesheet" href="css/app.css" />-->
 		<link rel="stylesheet" href="http://lyg.goluckin.com/themes/css/app.css" />
 		<link href="http://gz.ybinu.cn/video5.18/css/video-js.css" rel="stylesheet">
@@ -73,9 +72,10 @@
 							<ul id="subList"></ul>
 						</div>
 						<div class="color-fff quiz">
-							专家为你解答疑惑
+							发表评论
 							<div style="margin-top: 10px;">
-								<textarea style="width: 77%;"></textarea>
+								<textarea id="send"></textarea>
+								<input class="btn" id="btn" type="button" value="发送">
 							</div>
 						</div>
 					</div>
@@ -89,10 +89,15 @@
 	<!--<script type="text/javascript" src="js/common.js" ></script>-->
 	<script type="text/javascript">
 		$(function(){
-			fetch();
-			fetchStuent();
+			var roomid='26'; //房间号
+			var isBottom=true; //是否刷新到底部
+			var times=''; //计时器
+			fetch(); //初始化聊天列表
+			fetchStuent(); //初始化学生直播窗口
 			function fetch(){
-				$.get("http://lyg.goluckin.com/index.php/api/chatContent?roomid=26",function(res){
+				$.get(API+"chatContent",{
+					roomid:roomid
+				},function(res){
 					typeof res =="string" && (res=JSON.parse(res));
 					var html='';
 					res.data.forEach(function(item){
@@ -107,14 +112,27 @@
 							</li>`
 					})
 					$("#subList").html(html);
-					$(".stutent-list").animate({scrollTop:$(".stutent-list")[0].scrollHeight},400);
-					setTimeout(function(){
+					if(isBottom){
+						$(".stutent-list").animate({scrollTop:$(".stutent-list")[0].scrollHeight},400);
+						isBottom=false;
+					}else{
+						var sLT=$(".stutent-list")[0].scrollTop;
+						var sLSH=$(".stutent-list")[0].scrollHeight;
+						var sLH=$(".stutent-list").height();
+						if(sLT>sLSH-sLH) {
+							$(".stutent-list").animate({scrollTop:sLSH},400);
+						};
+					}
+					times=setTimeout(function(){
 						fetch();
 					},2000)
 				})
 			}
+			//学生窗口
 			function fetchStuent(){
-				$.get("http://lyg.goluckin.com/index.php/api/getstuadr?roomid=26",function(res){
+				$.get(API+"getstuadr",{
+					roomid:roomid
+				},function(res){
 					typeof res =="string" && (res=JSON.parse(res));
 					if(res.url){
 						$("#my-video2 source").attr("src",res.url)
@@ -124,6 +142,43 @@
 					},4000)
 				})
 			}
+			//监听发送回车
+			$("#send").on('keydown',function(e){
+	            if(e.keyCode!=13){
+	                return;
+	            }else{//当按键输入为回车时，执行下列操作
+	                event.preventDefault();//为了兼容IE8
+	                e.returnValue = false;
+	                send();
+	            }
+	        });
+	        //发送按钮
+	        $("#btn").on("click",function(){
+	        	send();
+	        })
+	        //发送消息
+	        function send(){
+	        	var sendVal= $("#send").val();
+	        	if(sendVal==''){
+	        		alert("发送不能为空！")
+	        		return;
+	        	}
+	        	$.get(API+"sendmsg",{
+	        		roomid:roomid,
+	        		userid:'ff045dd98a4e479887d2bf168ee0548f',
+	        		content:sendVal
+	        	},function(res){
+					typeof res =="string" && (res=JSON.parse(res));
+					if(res.status!=200){
+						alert(res.msg);
+						return;
+					}
+					$("#send").val('');
+					isBottom=true;
+					clearTimeout(times);
+					fetch();
+				})
+	        }
 		})
 		
 	</script>

@@ -1,3 +1,4 @@
+var API="http://lyg.goluckin.com/index.php/api/";
 (function () {
     //适配移动端rem
     var newRem = function () {
@@ -13,7 +14,6 @@
 	        var hasFlash = 0;         //是否安装了flash
 	        var flashVersion = 0; //flash版本
 	        var isIE = /*@cc_on!@*/0;      //是否IE浏览器
-	
 	        if (isIE) {
 	            var swf = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
 	            if (swf) {
@@ -41,10 +41,8 @@
 	    var s = "";
 	    if (fls.f) {
 	    	$(".openFlash").hide();
-	//        document.write("您安装了flash,当前flash版本为: " + fls.v + ".x");
 	    }
 	    else {
 	    	$(".openFlash").show();
-	//        document.write("您没有安装flash");
 	    }
 })();
