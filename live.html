@@ -4,11 +4,10 @@
 <head>
     <meta charset="utf-8" />
     <title></title>
-    <link rel="stylesheet" href="css/app.css" />
-    <!--<link rel="stylesheet" href="http://lyg.goluckin.com/themes/css/app.css" />-->
-    <link href="http://gz.ybinu.cn/video5.18/css/video-js.css" rel="stylesheet">
-    <script src="http://gz.ybinu.cn/video5.18/js/video.min.js"></script>
-    <script src="http://gz.ybinu.cn/video5.18/js/videojs-ie8.min.js"></script>
+    <!--<link rel="stylesheet" href="css/app.css" />-->
+    <link rel="stylesheet" href="http://lyg.goluckin.com/themes/css/app.css" />
+    <link href="//vjs.zencdn.net/5.19/video-js.min.css" rel="stylesheet">
+	<script src="//vjs.zencdn.net/5.19/video.min.js"></script>
 </head>
 
 <body>
@@ -26,19 +25,16 @@
         <div class="content flex">
             <div class="content-left">
                 <div class="content-left-top back">
-                    <video id="my-video2" style="color:black;width:100%;height:100%" class="video-js" autoplay controls preload="auto" width="750" height="350" data-setup="{}">
-							<source id="my-source" src="rtmp://no3.ybinu.cn:1935/hls/0" type="rtmp/flv">
-							<!--<source src="rtmp://ns8.indexforce.com/home/mystream" type="rtmp/flv">-->
-						</video>
+                    <video id="my-video2" style="color:black;width:100%;height:100%" class="video-js vjs-big-play-centered" controls preload="auto" width="750" height="350" data-setup="{}">
+							<!--<source id="my-source" src="img/twq.mp4">-->
+							<source src="rtmp://no3.ybinu.cn:1935/hls/111111" type="rtmp/flv">
+					</video>
                     <embed width="300" height="70" class="openFlash" style="position:absolute;top:0;z-Index:9999;" type="application/x-shockwave-flash">
                 </div>
                 <div class="content-left-bottom back mt-10 flex flex-column">
                     <div>
                         <div class="flex just-between gs-userlist-count color-fff">
-                            <div>问答</div>
-                            <div>
-                                <input type="checkbox">只看我
-                            </div>
+                            <div>在线学生列表</div>
                         </div>
                     </div>
                     <div class="flex1 subList-online">
@@ -48,19 +44,12 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="color-fff quiz">
-                        专家为你解答疑惑
-                        <div style="margin-top: 10px;">
-                            <textarea></textarea>
-                            <input class="btn" type="button" value="提问">
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="flex1 ml-10 flex flex-column">
                 <div class="content-center back flex just-center align-center">
                     <!-- <img src="./img/doc_bg.png" style="width: 260px;"> -->
-                    <video id="my-video" style="color:black;width:100%;height:100%" class="video-js" autoplay controls preload="auto" width="750" height="350" data-setup="{}">
+                    <video id="my-video" style="color:black;width:100%;height:100%" class="video-js vjs-big-play-centered" autoplay controls preload="auto" width="750" height="350" data-setup="{}">
 							<source src="rtmp://no3.ybinu.cn:1935/hls/111111" type="rtmp/flv">
 							<!--<source src="rtmp://ns8.indexforce.com/home/mystream" type="rtmp/flv">-->
 						</video>
@@ -95,8 +84,8 @@
     </div>
 </body>
 <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
-<!--<script type="text/javascript" src="http://lyg.goluckin.com/themes/js/common.js" ></script>-->
-<script type="text/javascript" src="js/common.js"></script>
+<script type="text/javascript" src="http://lyg.goluckin.com/themes/js/common.js" ></script>
+<!--<script type="text/javascript" src="js/common.js"></script>-->
 <script type="text/javascript">
     $(function() {
         var roomid = '26'; //房间号
@@ -154,13 +143,17 @@
             })
         }
         //学生窗口
+        var fetchStuentUrl='';
         function fetchStuent() {
             $.get(API + "getstuadr", {
                 roomid: roomid
             }, function(res) {
                 typeof res == "string" && (res = JSON.parse(res));
                 if (res.url) {
-                    $("#my-video2 source").attr("src", res.url)
+                	if(fetchStuentUrl!=res.url){
+                		fetchStuentUrl=res.url;
+                		changeSrc(res.url);
+                	}
                 }
                 setTimeout(function() {
                     fetchStuent();
@@ -178,10 +171,13 @@
                 })
                 $("#subList-online").html(html);
                 $("#subList-online li").on("click", function() {
-                    activeStunten($(this).attr("data-id"))
+                    changeSrc("rtmp://no3.ybinu.cn:1935/hls/" + $(this).attr("data-id"))
                 })
             })
         }
+        $(".my-checkbox").on("change",function(){
+        	isBottom=true;
+        })
         //监听发送回车
         $("#send").on('keydown', function(e) {
             if (e.keyCode != 13) {
@@ -225,15 +221,13 @@
                 fetch();
             })
         }
-        
-		var video = document.getElementById('my-video2');
-		var video2 = document.getElementById('my-source');
-        function activeStunten(id) {
-            video.pause();
-            video2.setAttribute('src', "rtmp://no3.ybinu.cn:1935/hls/" + id);
-            video.load();
-            video.play();
-        }
+		
+        function changeSrc(src) {
+            var myPlayera = videojs("my-video2");
+	        myPlayera.src(src); //重新初始化视频地址
+	        myPlayera.load(src);
+	        myPlayera.play(src);
+	    }
     })
 </script>
 
