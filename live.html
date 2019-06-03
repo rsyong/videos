@@ -40,7 +40,7 @@
 	    </div>
 	    <div class="m-input">
 	        <button class="button button-primary button-rounded testBtn" id="previewBtn" onclick="startPreview()">预览</button>
-	        <button class="button button-primary button-rounded testBtn" id="publishBtn" onclick="startPublish()">开始直播</button>
+	        <!--<button class="button button-primary button-rounded testBtn" id="publishBtn" onclick="startPublish()">开始直播</button>-->
 	        <span class="u-status"></span>
 	    </div>
 	    <div style="height: 1px;overflow: hidden;opacity: 0;">
@@ -65,6 +65,9 @@
 						<source id="my-source" src="rtmp://v9a6d110b.live.126.net/live/382830b04fe7421198f7902b979c327f" type="rtmp/flv">
 						<!--<source src="rtmp://ns8.indexforce.com/home/mystream" type="rtmp/flv">-->
 					</video>
+					<div style="position: absolute;width: 100%;height: 100%;top: 0;left: 0;z-index: -10;" id="my-publisher2-all">
+						<div id="my-publisher2"></div>
+					</div>
                 </div>
                 <div class="content-left-bottom back mt-10 flex flex-column">
                     <div>
@@ -127,6 +130,7 @@
         <button id="stop">停止</button>
         <button id="begin">开始</button>
         <button id="copy">复制地址.</button>
+        <button class="button button-primary button-rounded testBtn" id="publishBtn" onclick="startPublish()">开始直播</button>
         <input value="1" id="copyValue" style="opacity: 0;height: 0;width: 1px;" />
     </div>
    </div>
@@ -217,12 +221,18 @@
             }, function(res) {
                 typeof res == "string" && (res = JSON.parse(res));
                 if (res.url) {
-//              	if(res.url==userid){
-//              		startPublish();
-//              	}
                 	if(fetchStuentUrl!=res.url){
-                		fetchStuentUrl=res.url;
-                		changeSrc(res.url);
+                		if(res.url==userid){
+                			setTimeout(function(){
+                				startPublish();
+                			},fetchStuentUrl =='' ? 4000 : 0)
+	                		
+	                		$("#my-publisher2-all").css("z-index","100")
+	                	}else{
+	                		changeSrc("rtmp://no3.ybinu.cn:1935/hls/"+res.url);
+	                		$("#my-publisher2-all").css("z-index","-100")
+	                	}
+	                	fetchStuentUrl=res.url;
                 	}
                 }
                 timesS=setTimeout(function() {
@@ -401,16 +411,22 @@
 </script>
 <script type="text/javascript">
 	var isRoleName=$('#roleName').val()=='教师'; //角色是否是教师
+	var userid = $('#user_id').val();//学生id
+	var roomid = $('#roomid').val(); //房间号
 	
         var cameraList,
             microPhoneList,
             cameraOptions = '',
             microPhoneOptions = '';
-        var roomid = $('#roomid').val(); //房间号
         var publishBtn = document.getElementById('publishBtn');
         var previewBtn = document.getElementById('previewBtn')
         var testInput = document.getElementsByClassName('u-input');
-        var myPublisher = new nePublisher('my-publisher', {
+        var ids='my-publisher2',mClass='.content-left-top';
+        if(isRoleName){
+        	ids='my-publisher';
+        	mClass='.content-center';
+        }
+        var myPublisher = new nePublisher(ids, {
                 //viewOptions
                 videoWidth: 960,
                 videoHeight: 540,
@@ -418,8 +434,8 @@
                 bitrate: 1500
             }, {
                 //flashOptions
-                previewWindowWidth: $(".content-center").width(),
-                previewWindowHeight: $(".content-center").height(),
+                previewWindowWidth: $(mClass).width(),
+                previewWindowHeight: $(mClass).height(),
                 wmode: 'transparent',
                 quality: 'high',
                 allowScriptAccess: 'always'
@@ -436,7 +452,7 @@
                 document.getElementById("cameraSelect").innerHTML = cameraOptions;
                 document.getElementById("microPhoneSelect").innerHTML = microPhoneOptions;
                 if(isRoleName) {
-                	startPublish()
+//              	startPublish()
                 };
                 
             }, function(code, desc) {
@@ -486,7 +502,7 @@
             document.getElementsByClassName('u-status')[0].innerHTML = '预览中';
         };
         var startPublish = function() {
-            var publishUrl = "rtmp://no3.ybinu.cn:1935/hls/"+roomid;
+            var publishUrl = "rtmp://no3.ybinu.cn:1935/hls/"+(isRoleName==true ? roomid : userid);
             startPublishCall();
             myPublisher.setCamera(getCameraIndex());
             myPublisher.setMicroPhone(getMicroPhoneIndex());

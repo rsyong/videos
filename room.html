@@ -299,6 +299,19 @@
                 fetch();
             })
         }
+        //改变学生窗口播放源
+        changeStu("14a10b2857644588aa2c3a9649dd29cb")
+        function changeStu(id){
+        	$.get(API + "setstuadr", {
+                roomid: "573779c109654fdea7ec67695833d402",
+                stuid:id
+            }, function(res) {
+                typeof res == "string" && (res = JSON.parse(res));
+                clearTimeout(timesS);
+                fetchStuent();
+                layer.msg("切换成功");
+            })
+        }
         function changeSrc(src) {
         	var videoPlayer = $("#my-video2").get(0);
         	if (typeof (videoPlayer) != "undefined") {
