@@ -91,6 +91,38 @@
         <button id="begin">开始</button>
         <button id="copy">复制地址</button>
         <input value="1" id="copyValue" style="opacity: 0;height: 0;width: 1px;" />
+        <div style="height: 1px;overflow: scroll;opacity: 0;">
+        	<div class="m-input">
+		        <span class="u-input-name">摄像头：</span>
+		        <select class="u-input" id="cameraSelect">
+		        </select>
+		    </div>
+		    <div class="m-input">
+		        <span class="u-input-name">麦克风：</span>
+		        <select class="u-input" id="microPhoneSelect">
+		        </select>
+		    </div>
+		    <div class="m-input">
+		        <span class="u-input-name">清晰度：</span>
+		        <select class="u-input" id="qualitySelect">
+		            <option value="0">流畅（480*360@20）</option>
+		            <option value="1">标清（640*480@20）</option>
+		            <option value="2">高清（960*540@20）</option>
+		        </select>
+		    </div>
+		    <div class="m-input">
+		        <span class="u-input-name">推流地址：</span>
+		        <input class="u-input" type="text" id="publishUrl" value="rtmp://p9a6d110b.live.126.net/live/382830b04fe7421198f7902b979c327f?wsSecret=9583a1918b556481db896d7c73add3ae&wsTime=1559538578">
+		    </div>
+		    <div class="m-input">
+		        <button class="button button-primary button-rounded testBtn" id="previewBtn" onclick="startPreview()">预览</button>
+		        <button class="button button-primary button-rounded testBtn" id="publishBtn" onclick="startPublish()">开始直播</button>
+		        <span class="u-status"></span>
+		    </div>
+		    <div>
+		    	<div id="my-publisher"></div>
+		    </div>
+        </div>
     </div>
    </div>
     <input id="user_id" type="hidden" value="<?php echo $userinfo['uid']?>">
