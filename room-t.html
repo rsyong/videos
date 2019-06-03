@@ -5,16 +5,41 @@
     <meta charset="utf-8" />
     <title></title>
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE10" > 
-    <script type="text/javascript" src="http://lyg.goluckin.com/themes/js/nePublisher.min.js" ></script>
+    <script type="text/javascript" src="js/nePublisher.min.js" ></script>
     <link rel="stylesheet" type="text/css" href="http://www.bootcss.com/p/buttons/css/buttons.css">
-    <link href="//vjs.zencdn.net/5.19/video-js.min.css" rel="stylesheet">
-    <!--<link rel="stylesheet" href="css/app.css" />-->
-    <link rel="stylesheet" href="http://lyg.goluckin.com/themes/css/app.css" />
-	<script src="http://gz.ybinu.cn/video5.18/js/video.min.js"></script>
+    <link href="http://gz.ybinu.cn/video5.18/css/video-js.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/app.css" />
+    <!--<link rel="stylesheet" href="http://lyg.goluckin.com/themes/css/app.css" />-->
+    <script src="http://gz.ybinu.cn/video5.18/js/video.min.js"></script>
+    <script src="http://gz.ybinu.cn/video5.18/js/videojs-ie8.min.js"></script>
+    <style type="text/css">
+        .m-input {
+            margin-bottom: 10px;
+        }
+        .u-input-name {
+            display: inline-block;
+            width: 85px;
+        }
+        .u-input {
+            width: 500px;
+            height: 25px;
+            border: none;
+            border-bottom: 1px solid #000;
+            outline: none;
+            color: #000;
+        }
+        .testBtn {
+            width: 150px;
+        }
+        .u-status {
+            margin-left: 10px;
+            display: inline-block;
+        }
+    </style>
 </head>
 
 <body>
-	<div style="position: absolute;z-index: -100;opacity: 0;">
+	<div style="position: absolute;z-index: -100;">
     	<h1>NePublisher Demo</h1>
 	    <div class="m-input">
 	        <span class="u-input-name">摄像头：</span>
@@ -44,7 +69,7 @@
 	        <span class="u-status"></span>
 	    </div>
 	    <div style="height: 1px;overflow: hidden;opacity: 0;">
-	    	<!--<div id="my-publisher"></div>-->
+	    	
 	    </div>
     </div>
     <div class="main">
@@ -62,37 +87,43 @@
             <div class="content-left">
                 <div class="content-left-top back">
                     <video id="my-video2" style="color:black;width:100%;height:100%" class="video-js" autoplay controls preload="auto" width="750" height="350" data-setup="{}">
-						<source id="my-source" src="rtmp://v9a6d110b.live.126.net/live/382830b04fe7421198f7902b979c327f" type="rtmp/flv">
-						<!--<source src="rtmp://ns8.indexforce.com/home/mystream" type="rtmp/flv">-->
-					</video>
+							<source id="my-source" src="rtmp://no3.ybinu.cn:1935/hls/14ea81d3ada5490cb1b2d128d109bca0" type="rtmp/flv">
+							<!--<source src="rtmp://ns8.indexforce.com/home/mystream" type="rtmp/flv">-->
+						</video>
+                    <!--<embed width="300" height="70" class="openFlash" style="position:absolute;top:0;z-Index:9999;" type="application/x-shockwave-flash">-->
                 </div>
                 <div class="content-left-bottom back mt-10 flex flex-column">
                     <div>
                         <div class="flex just-between gs-userlist-count color-fff">
-                            <div>在线学生列表</div>
+                            <div>问答</div>
+                            <div>
+                                <input type="checkbox">只看我
+                            </div>
                         </div>
                     </div>
                     <div class="flex1 subList-online">
                         <ul id="subList-online">
-                            <!--<li>
+                            <li>
                                 <img src="http://lyg.goluckin.com/themes/v2/static/images/17yk.png" />asd
-                            </li>-->
+                            </li>
                         </ul>
+                    </div>
+                    <div class="color-fff quiz">
+                        专家为你解答疑惑
+                        <div style="margin-top: 10px;">
+                            <textarea></textarea>
+                            <input class="btn" type="button" value="提问">
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="flex1 ml-10 flex flex-column">
-                <div class="content-center back flex just-center align-center" data-src = "rtmp://no3.ybinu.cn:1935/hls/<?php echo $roomid?>">
-                	<div id="my-publisher-all">
-                		<div id="my-publisher"></div>
-                	</div>
+                <div class="content-center back flex just-center align-center">
+                	<div id="my-publisher"></div>
                     <!-- <img src="./img/doc_bg.png" style="width: 260px;"> -->
-                    <div id="my-video-all" style="color:black;width:100%;height:100%">
-                    	<video id="my-video" style="color:black;width:100%;height:100%" class="video-js vjs-big-play-centered" autoplay controls preload="auto" width="750" height="350" data-setup="{}">
-							<source src="rtmp://no3.ybinu.cn:1935/hls/<?php echo $roomid?>" type="rtmp/flv">
-							<!--<source src="rtmp://ns8.indexforce.com/home/mystream" type="rtmp/flv">-->
-						</video>
-                    </div>
+                    <!--<video id="my-video" style="color:black;width:100%;height:100%" class="video-js" autoplay controls preload="auto" width="750" height="350" data-setup="{}">-->
+							<!--<source src="rtmp://v9a6d110b.live.126.net/live/382830b04fe7421198f7902b979c327f" type="rtmp/flv">-->
+						<!--</video>-->
                     <!--<embed width="300" height="70" class="openFlash" style="position:absolute;z-Index:9999;" type="application/x-shockwave-flash">-->
                 </div>
                 <div class="content-bottom back mt-10">
@@ -106,7 +137,7 @@
                     <div>
                         <div class="flex just-between gs-userlist-count color-fff">
                             <div>聊天</div>
-                            <div class="onlye">
+                            <div>
                                 <input class="my-checkbox" type="checkbox">只看我
                             </div>
                         </div>
@@ -115,7 +146,7 @@
                         <ul id="subList"></ul>
                     </div>
                     <div class="color-fff quiz">
-                       	 发表评论
+                        发表评论
                         <div style="margin-top: 10px;" class="flex just-between">
                             <textarea id="send" class="flex"></textarea>
                             <input class="btn" id="btn" type="button" value="发送">
@@ -124,18 +155,9 @@
                 </div>
             </div>
         </div>
-        <button id="stop">停止</button>
-        <button id="begin">开始</button>
-        <button id="copy">复制地址.</button>
-        <input value="1" id="copyValue" style="opacity: 0;height: 0;width: 1px;" />
+        <button id="qiehuan">切换</button>
+        
     </div>
-   </div>
-    <input id="user_id" type="hidden" value="<?php echo $userinfo['uid']?>">
-	<input id="roomid" type="hidden" value="<?php echo $roomid?>">
-	<input id="roleName" type="hidden" value="<?php echo $userinfo['roleName']?>">
-	<input id="tid" type="hidden" value="<?php echo $tid?>">
-	<input id="roleCode" type="hidden" value="<?php echo $userinfo['roleCode']?>">
-	<input id="liveid" type="hidden" value="<?php echo $liveid?>">
 </body>
 <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
 <script type="text/javascript" src="http://lyg.goluckin.com/themes/js/layer.js" ></script>
@@ -143,50 +165,38 @@
 <!--<script type="text/javascript" src="js/common.js"></script>-->
 <script type="text/javascript">
     $(function() {
-        var roomid = $('#roomid').val(); //房间号
-        var userid = $('#user_id').val();//学生id
-        var techerid=$('#tid').val();//教师id
-        var isRoleName=$('#roleName').val()=='教师'; //角色是否是教师
-        var roleCode=$('#roleCode').val();
-        var liveid=$('#liveid').val();
+        var roomid = '26'; //房间号
+        var userid = 'ff045dd98a4e479887d2bf168ee0548f';
         var isBottom = true; //是否刷新到底部
-        var times = '',timesS=''; //计时器
-        if(isRoleName){
-        	$("#my-video-all").remove();
-        }else{
-        	$("#my-publisher-all").remove();
-        }
+        var times = ''; //计时器
         fetch(); //初始化聊天列表
         fetchStuent(); //初始化学生直播窗口
-        $("#copyValue").val("rtmp://no3.ybinu.cn:1935/hls/"+userid);
         function fetch() {
             var checkboxs = $(".my-checkbox")[0].checked;
-            var obj = {},myurl='chatContent';
+            var obj = {};
             if (checkboxs) {
-            	obj = {
-                    sid: userid,
-                    tid:techerid,
-                    roomid:roomid
+                obj = {
+                    roomid: roomid,
+                    userid: userid
                 }
-            	myurl='showchat';
             } else {
                 obj = {
                     roomid: roomid
                 }
             }
-            $.get(API + myurl, obj, function(res) {
+            $.get(API + "chatContent", obj, function(res) {
                 typeof res == "string" && (res = JSON.parse(res));
                 var html = '';
-                res.data&&res.data.forEach(function(item) {
-                    html += '<li class="flex">'
-								+'<div>'
-									+'<img src="http://lyg.goluckin.com/themes/v2/static/images/17yk.png"  style="width: 40px;"/>'
-								+'</div>'
-								+'<div>'
-									+'<div class="title">'+item.chatname+' ['+getLocalTime(item.ctime)+']</div>'
-									+'<div class="title_content">'+item.chatcontent+'</div>'
-								+'</div>'
-							+'</li>'
+                res.data.forEach(function(item) {
+                    html += `<li class="flex">
+								<div>
+									<img src="http://lyg.goluckin.com/themes/v2/static/images/17yk.png"  style="width: 40px;"/>
+								</div>
+								<div>
+									<div class="title">${item.chatname} [${getLocalTime(item.ctime)}]</div>
+									<div class="title_content">${item.chatcontent}</div>
+								</div>
+							</li>`
                 })
                 $("#subList").html(html);
                 if (isBottom) {
@@ -210,22 +220,15 @@
             })
         }
         //学生窗口
-        var fetchStuentUrl='';
         function fetchStuent() {
             $.get(API + "getstuadr", {
                 roomid: roomid
             }, function(res) {
                 typeof res == "string" && (res = JSON.parse(res));
                 if (res.url) {
-//              	if(res.url==userid){
-//              		startPublish();
-//              	}
-                	if(fetchStuentUrl!=res.url){
-                		fetchStuentUrl=res.url;
-                		changeSrc(res.url);
-                	}
+//                  changeSrc(res.url);
                 }
-                timesS=setTimeout(function() {
+                setTimeout(function() {
                     fetchStuent();
                 }, 10000)
             })
@@ -234,27 +237,17 @@
             }, function(res) {
                 typeof res == "string" && (res = JSON.parse(res));
                 var html = "";
-                res.data&&res.data.forEach(function(item) {
-					html+='<li data-id="'+item.uid+'">'
-                                +'<img src="http://lyg.goluckin.com/themes/v2/static/images/17yk.png" />'+item.name
-                            +'</li>'
+                res.data.forEach(function(item) {
+                    html += `<li data-id="${item.uid}">
+								<img src="http://lyg.goluckin.com/themes/v2/static/images/17yk.png" />${item.name}
+							</li>`
                 })
-
-				$.get("http://lyg.goluckin.com/index.php/userstatus/useronline", {
-                	roomid: roomid
-            	})
                 $("#subList-online").html(html);
-                if(isRoleName){
-                	$("#subList-online li").on("click", function() {
-	                    changeStu($(this).attr("data-id"))
-	                })
-                }
+                $("#subList-online li").on("click", function() {
+                    changeSrc("rtmp://no3.ybinu.cn:1935/hls/"+$(this).attr("data-id"))
+                })
             })
         }
-        //监听切换私聊
-        $(".my-checkbox").on("change",function(){
-        	isBottom=true;
-        })
         //监听发送回车
         $("#send").on('keydown', function(e) {
             if (e.keyCode != 13) {
@@ -267,29 +260,29 @@
         });
         //发送按钮
         $("#btn").on("click", function() {
-            send();
-        })
-        //发送消息
+                send();
+            })
+            //发送消息
         function send() {
             var sendVal = $("#send").val();
             if (sendVal == '') {
-                layer.msg("发送不能为空！")
+                alert("发送不能为空！")
                 return;
             }
             var checkboxs = $(".my-checkbox")[0].checked,
                 obj = {};
             obj = {
                 roomid: roomid,
-                userid: userid,
+                userid: 'ff045dd98a4e479887d2bf168ee0548f',
                 content: sendVal
             }
             if (checkboxs) {
-                obj.touser = userid;
+                obj.touser = 'ff045dd98a4e479887d2bf168ee0548f';
             }
             $.get(API + "sendmsg", obj, function(res) {
                 typeof res == "string" && (res = JSON.parse(res));
                 if (res.status != 200) {
-                    layer.msg(res.msg);
+                    alert(res.msg);
                     return;
                 }
                 $("#send").val('');
@@ -298,17 +291,15 @@
                 fetch();
             })
         }
-		//改变路径
         function changeSrc(src) {
         	var videoPlayer = $("#my-video2").get(0);
         	if (typeof (videoPlayer) != "undefined") {
         		var myPlayer = videojs('my-video2');
         		myPlayer.dispose();
         		var id="my-video2";
-        		var htmls='<video id="my-video2" style="color:black;width:100%;height:100%" class="video-js" autoplay controls preload="auto" width="750" height="350" data-setup="{}">'
-							+'<source id="my-source" src='+src+' type="rtmp/flv">'
-						+'</video>'
-        		$(".content-left-top").html(htmls);
+        		$(".content-left-top").html(`<video id="my-video2" style="color:black;width:100%;height:100%" class="video-js" autoplay controls preload="auto" width="750" height="350" data-setup="{}">
+							<source id="my-source" src="${src}" type="rtmp/flv">
+						</video>`);
 	            //设置资源路径
 	            $(".content-left-top").attr("src", src);
 	            videojs(id, {}, function () { //自动播放
@@ -320,49 +311,27 @@
 	                });
 	            });
         	}
+//          var myPlayera = videojs("my-video2");
+//          myPlayera.dispose();
+//	        myPlayera.src(src); //重新初始化视频地址
+//	        myPlayera.load(src);
+//	        myPlayera.play(src);
+//	        $(".content-left-models").hide();
 	    }
-        //停止播放
-        $("#stop").on("click",function(){
-        	var myPlayera = videojs("my-video2");
-        	myPlayera.pause();
-        	$(".content-left-models").show();
+        $("#qiehuan").on("click",function(){
+        	changeSrc("rtmp://ns8.indexforce.com/home/mystream")
         })
-        //开始播放
-        $("#begin").on("click",function(){
-        	var myPlayera = videojs("my-video2");
-        	myPlayera.load();
-        	$(".content-left-models").hide();
-        })
-        //改变学生窗口播放源
-        function changeStu(id){
-        	$.get(API + "setstuadr", {
-                roomid: roomid,
-                stuid:id
-            }, function(res) {
-                typeof res == "string" && (res = JSON.parse(res));
-                clearTimeout(timesS);
-                fetchStuent();
-                layer.msg("切换成功");
-            })
-        }
-        //复制源地址
-        $("#copy").on("click",function(){
-        	$("#copyValue")[0].select();
-        	document.execCommand("Copy");
-        	layer.msg("复制成功");
-        })
-        //作业列表
         $("#worklist").on("click",function(){
         	$.get(API + "teacher_homework_list", {
-                liveid: liveid
+                liveid: '999e4ee805745a5a3322916203384930'
             }, function(res) {
                 typeof res == "string" && (res = JSON.parse(res));
                 var html = '<ul class="material">';
                 res.data&&res.data.forEach(function(item) {
-                    html += '<li class="flex just-between">'
-				                +'<div>'+item.clName+'</div>'
-				                +'<a href="'+item.path+'" target="_blank" class="material_btn">下载</a>'
-				            +'</li>'
+                    html += `<li class="flex just-between">
+				                <div>${item.clName}</div>
+				                <a href="${item.path}" target="_blank" class="material_btn">下载</a>
+				            </li>`
                 })
                 html+='</ul>';
                 layer.open({
@@ -373,40 +342,26 @@
 				}); 
             })
         })
-        //开始上课
-        $.get("http://www.xueerqin.net:9526/cloud/api/beginClasses", {
-            userId: userid,
-            roleCode:roleCode,
-            roomId:roomid,
-            liveId:liveid,
-            endTime:getLocalTime(new Date().getTime()),
-            liveflag:'2',
-            url:document.URL,
-        }, function(res) {
-            typeof res == "string" && (res = JSON.parse(res));
-        })
         window.onunload = onunload_handler; 
 	    function onunload_handler(){
 	        $.get("http://www.xueerqin.net:9526/cloud/api/endClasses", {
 	            userId: userid,
-	            roleCode:roleCode,
+	            roleCode:'',
 	            roomId:roomid,
-	            liveId:liveid,
+	            liveId:'',
 	            endTime:getLocalTime(new Date().getTime()),
 	            liveflag:'2',
 	            url:document.URL,
 	        })
-	   	} 
+	   	}  
     })
+    
 </script>
 <script type="text/javascript">
-	var isRoleName=$('#roleName').val()=='教师'; //角色是否是教师
-	
         var cameraList,
             microPhoneList,
             cameraOptions = '',
             microPhoneOptions = '';
-        var roomid = $('#roomid').val(); //房间号
         var publishBtn = document.getElementById('publishBtn');
         var previewBtn = document.getElementById('previewBtn')
         var testInput = document.getElementsByClassName('u-input');
@@ -417,7 +372,6 @@
                 fps: 20,
                 bitrate: 1500
             }, {
-                //flashOptions
                 previewWindowWidth: $(".content-center").width(),
                 previewWindowHeight: $(".content-center").height(),
                 wmode: 'transparent',
@@ -435,13 +389,9 @@
                 }
                 document.getElementById("cameraSelect").innerHTML = cameraOptions;
                 document.getElementById("microPhoneSelect").innerHTML = microPhoneOptions;
-                if(isRoleName) {
-                	startPublish()
-                };
-                
+                startPublish()
             }, function(code, desc) {
                 console.log(code, desc);
-                
             });
         var qualityList = [
             {
@@ -486,7 +436,7 @@
             document.getElementsByClassName('u-status')[0].innerHTML = '预览中';
         };
         var startPublish = function() {
-            var publishUrl = "rtmp://no3.ybinu.cn:1935/hls/"+roomid;
+            var publishUrl = "rtmp://p9a6d110b.live.126.net/live/382830b04fe7421198f7902b979c327f?wsSecret=9583a1918b556481db896d7c73add3ae&wsTime=1559538578";
             startPublishCall();
             myPublisher.setCamera(getCameraIndex());
             myPublisher.setMicroPhone(getMicroPhoneIndex());

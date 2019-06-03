@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <title></title>
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE10" > 
     <script type="text/javascript" src="js/nePublisher.min.js" ></script>
     <link rel="stylesheet" type="text/css" href="http://www.bootcss.com/p/buttons/css/buttons.css">
     <link href="http://gz.ybinu.cn/video5.18/css/video-js.css" rel="stylesheet">
@@ -68,7 +69,7 @@
 	        <span class="u-status"></span>
 	    </div>
 	    <div style="height: 1px;overflow: hidden;opacity: 0;">
-	    	<div id="my-publisher"></div>
+	    	
 	    </div>
     </div>
     <div class="main">
@@ -119,10 +120,12 @@
             <div class="flex1 ml-10 flex flex-column">
                 <div class="content-center back flex just-center align-center">
                     <!-- <img src="./img/doc_bg.png" style="width: 260px;"> -->
-                    <video id="my-video" style="color:black;width:100%;height:100%" class="video-js" autoplay controls preload="auto" width="750" height="350" data-setup="{}">
-							<source src="rtmp://v9a6d110b.live.126.net/live/382830b04fe7421198f7902b979c327f" type="rtmp/flv">
-							<!--<source src="rtmp://ns8.indexforce.com/home/mystream" type="rtmp/flv">-->
-						</video>
+                    <div id="my-publisher"></div>
+                    <!-- <img src="./img/doc_bg.png" style="width: 260px;"> -->
+                    <video id="my-video" style="color:black;width:100%;height:100%" class="video-js vjs-big-play-centered" autoplay controls preload="auto" width="750" height="350" data-setup="{}">
+						<source src="rtmp://no3.ybinu.cn:1935/hls/<?php echo $roomid?>" type="rtmp/flv">
+						<!--<source src="rtmp://ns8.indexforce.com/home/mystream" type="rtmp/flv">-->
+					</video>
                     <!--<embed width="300" height="70" class="openFlash" style="position:absolute;z-Index:9999;" type="application/x-shockwave-flash">-->
                 </div>
                 <div class="content-bottom back mt-10">
@@ -170,6 +173,12 @@
         var times = ''; //计时器
         fetch(); //初始化聊天列表
         fetchStuent(); //初始化学生直播窗口
+        isRoleName=false;
+        if(isRoleName){
+        	$("#my-video").remove();
+        }else{
+        	$("#my-publisher").remove();
+        }
         function fetch() {
             var checkboxs = $(".my-checkbox")[0].checked;
             var obj = {};
@@ -341,6 +350,12 @@
 				}); 
             })
         })
+        //开始上课
+        $.get("http://www.xueerqin.net:9526/cloud/api/beginClasses", {
+            roomid: roomid
+        }, function(res) {
+            typeof res == "string" && (res = JSON.parse(res));
+        })
         window.onunload = onunload_handler; 
 	    function onunload_handler(){
 	        $.get("http://www.xueerqin.net:9526/cloud/api/endClasses", {
@@ -371,9 +386,8 @@
                 fps: 20,
                 bitrate: 1500
             }, {
-                //flashOptions
-                previewWindowWidth: 862,
-                previewWindowHeight: 486,
+                previewWindowWidth: $(".content-center").width(),
+                previewWindowHeight: $(".content-center").height(),
                 wmode: 'transparent',
                 quality: 'high',
                 allowScriptAccess: 'always'
