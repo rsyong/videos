@@ -15,7 +15,6 @@
 
 <body>
 	<div style="position: absolute;z-index: -100;opacity: 0;">
-    	<h1>NePublisher Demo</h1>
 	    <div class="m-input">
 	        <span class="u-input-name">摄像头：</span>
 	        <select class="u-input" id="cameraSelect">
@@ -36,7 +35,7 @@
 	    </div>
 	    <div class="m-input">
 	        <span class="u-input-name">推流地址：</span>
-	        <input class="u-input" type="text" id="publishUrl" value="rtmp://p9a6d110b.live.126.net/live/382830b04fe7421198f7902b979c327f?wsSecret=9583a1918b556481db896d7c73add3ae&wsTime=1559538578">
+	        <input class="u-input" type="text" id="publishUrl" value="">
 	    </div>
 	    <div class="m-input">
 	        <button class="button button-primary button-rounded testBtn" id="previewBtn" onclick="startPreview()">预览</button>
@@ -100,7 +99,15 @@
                 </div>
                 <div class="content-bottom back mt-10">
                 	<div class="flex align-center" style="height: 100%;padding: 0 1rem;">
-                		<div id="worklist">作业列表</div>
+                		<div id="publishBtn" class="content-bottom-list" onclick="startPublish()">开始直播</div>
+                		<div id="begin" class="content-bottom-list">播放</div>
+                		<div id="stop" class="content-bottom-list">暂停</div>
+                		<div id="Offline" class="content-bottom-list">强制下线</div>
+                		<div id="endclass" class="content-bottom-list">结束课程</div>
+                		<div id="copy" class="content-bottom-list" onclick="startPublish()">复制地址</div>
+                		<!--<div id="worklist" class="content-bottom-list">作业列表</div>-->
+                		<a class="ation operation_raise2 back-img" href="javascript:;" id="worklist" title="作业列表"></a>
+                		<a class="ation operation_raise back-img" href="javascript:;" id="hands" title="举手"></a>
                 	</div>
                 </div>
             </div>
@@ -127,10 +134,6 @@
                 </div>
             </div>
         </div>
-        <button id="stop">停止</button>
-        <button id="begin">开始</button>
-        <button id="copy">复制地址.</button>
-        <button class="button button-primary button-rounded testBtn" id="publishBtn" onclick="startPublish()">开始直播</button>
         <input value="1" id="copyValue" style="opacity: 0;height: 0;width: 1px;" />
     </div>
    </div>
@@ -157,8 +160,18 @@
         var times = '',timesS=''; //计时器
         if(isRoleName){
         	$("#my-video-all").remove();
+        	$("#copy").hide();
+        	$("#worklist").hide();
+        	$(".ation").hide();
+        	$("#begin").hide();
+        	$("#stop").hide();
         }else{
         	$("#my-publisher-all").remove();
+        	$("#publishBtn").hide();
+        	$("#Offline").hide();
+        	$("#endclass").hide();
+        	$("#begin").hide();
+        	$("#stop").hide();
         }
         fetch(); //初始化聊天列表
         fetchStuent(); //初始化学生直播窗口
@@ -187,12 +200,21 @@
 									+'<img src="http://lyg.goluckin.com/themes/v2/static/images/17yk.png"  style="width: 40px;"/>'
 								+'</div>'
 								+'<div>'
-									+'<div class="title">'+item.chatname+' ['+getLocalTime(item.ctime)+']</div>'
-									+'<div class="title_content">'+item.chatcontent+'</div>'
+									+'<div class="title">'+item.chatname+' ['+getLocalTime(item.ctime)+']</div>';
+					if(item.chatcontent=='「举手」'){
+						html+='<div class="title_content cur-pointer" data-id="'+item.chatuserid+'">'+item.chatcontent+'</div>'
+					}else{
+						html+='<div class="title_content">'+item.chatcontent+'</div>'
+					}
 								+'</div>'
 							+'</li>'
                 })
                 $("#subList").html(html);
+                if(isRoleName){
+                	$(".cur-pointer").on("click",function(){
+	                	changeStu($(this).attr("data-id"))
+	                })
+                }
                 if (isBottom) {
                     $(".stutent-list").animate({
                         scrollTop: $(".stutent-list")[0].scrollHeight
@@ -223,14 +245,23 @@
                 if (res.url) {
                 	if(fetchStuentUrl!=res.url){
                 		if(res.url==userid){
-                			setTimeout(function(){
-                				startPublish();
-                			},fetchStuentUrl =='' ? 4000 : 0)
-	                		
-	                		$("#my-publisher2-all").css("z-index","100")
+	                		layer.confirm('是否开始直播？', {
+							  	btn: ['确定','取消'] //按钮
+							}, function(){
+							  	$("#publishBtn").click();
+							  	layer.closeAll();
+							  	$("#begin").show();
+        						$("#stop").show();
+							  	$("#my-publisher2-all").css("z-index","100")
+							}, function(){
+							  
+							});
 	                	}else{
 	                		changeSrc("rtmp://no3.ybinu.cn:1935/hls/"+res.url);
-	                		$("#my-publisher2-all").css("z-index","-100")
+	                		$("#my-publisher2-all").css("z-index","-100");
+	                		if(fetchStuentUrl!=''){stopPublish()}
+	                		$("#begin").hide();
+        					$("#stop").hide();
 	                	}
 	                	fetchStuentUrl=res.url;
                 	}
@@ -264,6 +295,8 @@
         //监听切换私聊
         $(".my-checkbox").on("change",function(){
         	isBottom=true;
+        	clearTimeout(times);
+           	fetch();
         })
         //监听发送回车
         $("#send").on('keydown', function(e) {
@@ -278,6 +311,22 @@
         //发送按钮
         $("#btn").on("click", function() {
             send();
+        })
+        $("#hands").on("click",function(){
+        	$.get(API + "sendmsg", {
+        		roomid: roomid,
+                userid: userid,
+                content: '「举手」'
+        	}, function(res) {
+                typeof res == "string" && (res = JSON.parse(res));
+                if (res.status != 200) {
+                    layer.msg(res.msg);
+                    return;
+                }
+                isBottom = true;
+                clearTimeout(times);
+                fetch();
+            })
         })
         //发送消息
         function send() {
@@ -350,8 +399,6 @@
                 stuid:id
             }, function(res) {
                 typeof res == "string" && (res = JSON.parse(res));
-                clearTimeout(timesS);
-                fetchStuent();
                 layer.msg("切换成功");
             })
         }
@@ -383,21 +430,15 @@
 				}); 
             })
         })
-        //开始上课
-        $.get("http://www.xueerqin.net:9526/cloud/api/beginClasses", {
-            userId: userid,
-            roleCode:roleCode,
-            roomId:roomid,
-            liveId:liveid,
-            endTime:getLocalTime(new Date().getTime()),
-            liveflag:'2',
-            url:document.URL,
-        }, function(res) {
-            typeof res == "string" && (res = JSON.parse(res));
+        $("#Offline").on("click",function(){
+        	changeStu("123456")
+        })
+        $("#endclass").on("click",function(){
+        	onunload_handler();
         })
         window.onunload = onunload_handler; 
 	    function onunload_handler(){
-	        $.get("http://www.xueerqin.net:9526/cloud/api/endClasses", {
+	        $.get(API+"endClasses", {
 	            userId: userid,
 	            roleCode:roleCode,
 	            roomId:roomid,
@@ -405,6 +446,9 @@
 	            endTime:getLocalTime(new Date().getTime()),
 	            liveflag:'2',
 	            url:document.URL,
+	        }).then(function(res){
+	        	typeof res == "string" && (res = JSON.parse(res));
+	        	layer.msg("结束成功");
 	        })
 	   	} 
     })
@@ -427,38 +471,38 @@
         	mClass='.content-center';
         }
         var myPublisher = new nePublisher(ids, {
-                //viewOptions
-                videoWidth: 960,
-                videoHeight: 540,
-                fps: 20,
-                bitrate: 1500
-            }, {
-                //flashOptions
-                previewWindowWidth: $(mClass).width(),
-                previewWindowHeight: $(mClass).height(),
-                wmode: 'transparent',
-                quality: 'high',
-                allowScriptAccess: 'always'
-            }, function() {
-                cameraList = this.getCameraList();
-                microPhoneList = this.getMicroPhoneList();
-                console.log(cameraList, microPhoneList);
-                for (var i = cameraList.length - 1; i >= 0; i--) {
-                    cameraOptions = '<option value="' + i + '">' + cameraList[i] + '</option>' + cameraOptions;
-                }
-                for (var i = microPhoneList.length - 1; i >= 0; i--) {
-                    microPhoneOptions = '<option value="' + i + '">' + microPhoneList[i] + '</option>' + microPhoneOptions;
-                }
-                document.getElementById("cameraSelect").innerHTML = cameraOptions;
-                document.getElementById("microPhoneSelect").innerHTML = microPhoneOptions;
-                if(isRoleName) {
+            //viewOptions
+            videoWidth: 960,
+            videoHeight: 540,
+            fps: 20,
+            bitrate: 1500
+        }, {
+            //flashOptions
+            previewWindowWidth: $(mClass).width(),
+            previewWindowHeight: $(mClass).height(),
+            wmode: 'transparent',
+            quality: 'high',
+            allowScriptAccess: 'always'
+        }, function() {
+            cameraList = this.getCameraList();
+            microPhoneList = this.getMicroPhoneList();
+            console.log(cameraList, microPhoneList);
+            for (var i = cameraList.length - 1; i >= 0; i--) {
+                cameraOptions = '<option value="' + i + '">' + cameraList[i] + '</option>' + cameraOptions;
+            }
+            for (var i = microPhoneList.length - 1; i >= 0; i--) {
+                microPhoneOptions = '<option value="' + i + '">' + microPhoneList[i] + '</option>' + microPhoneOptions;
+            }
+            document.getElementById("cameraSelect").innerHTML = cameraOptions;
+            document.getElementById("microPhoneSelect").innerHTML = microPhoneOptions;
+            if(isRoleName) {
 //              	startPublish()
-                };
-                
-            }, function(code, desc) {
-                console.log(code, desc);
-                
-            });
+            };
+            
+        }, function(code, desc) {
+            console.log(code, desc);
+            
+        });
         var qualityList = [
             {
                 //流畅

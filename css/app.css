@@ -1,5 +1,6 @@
 body{
 	font-size: 14px;
+	font-family: "微软雅黑";
 }
 .flex{
 	display: flex;
@@ -19,6 +20,12 @@ body{
 }
 .align-center{
 	align-items: center;
+}
+.align-center div{
+	transition: .6s;
+}
+.align-center div:hover{
+	opacity: .7;
 }
 .back{
 	background-color: rgba(0,0,0,.4);
@@ -79,6 +86,36 @@ ul{
 	position: fixed;top: 0;left: 0;width: 100%;height: 100%;background-image: url(../img/bg.jpg);background-size: 100% 100%;padding:  10px;box-sizing: border-box
 	/*display: flex;flex: 1;justify-content: center;align-items: center;*/
 }
+.back-img{
+	background: url(../img/bg_smaall.png) no-repeat;
+}
+.ation {
+    display: inline-block;
+    width: 34px;
+    height: 34px;
+    line-height: 34px;
+    position: relative;
+}
+.volume {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    line-height: 34px;
+    position: relative;
+    margin-right: 10px;
+}
+.operation_raise {
+    background-position: -100px -1px;
+}
+.operation_raise2{
+	background-position: -236px -1px;
+}
+.volume_close{
+	background-position: -752px -23px;
+}
+.volume_close:hover {
+    background-position: -780px -23px;
+}
 .gs-title{
 	color: #fff;
 	margin-bottom: 15px;
@@ -100,7 +137,8 @@ ul{
 	position: relative;
 }
 .content-left-bottom{
-	height: 30rem;
+	height: 35rem;
+	max-height: 35rem;
 }
 .content-center{
 	flex: 1;
@@ -152,6 +190,7 @@ ul{
     color: white;
 }
 .stutent-list{
+	max-height: 43rem;
     overflow-y: scroll;
 }
 .subList-online{
@@ -223,7 +262,20 @@ background-color:#bbb;
 	border-bottom: 1px solid rgba(0,0,0,.3);
 	color: #333;
 }
-.material_btn,#worklist{
+.content-bottom-list{
+	background-color: #0298d4;
+    color: #fff;
+    padding: 3px 15px;
+    border-radius: 5px;
+    transition: .6s;
+    border: none;
+    text-decoration: none;
+    display: inline-block;
+	cursor: pointer;
+	padding: 5px 15px;
+	margin-right: 10px;
+}
+.material_btn{
 	background-color: #0298d4;
     color: #fff;
     padding: 3px 15px;
@@ -232,14 +284,12 @@ background-color:#bbb;
     border: none;
     text-decoration: none;
 }
-#worklist{
-	display: inline-block;
-	cursor: pointer;
-	padding: 5px 15px;
-}
 .material_btn:hover{
 	opacity: .7;
 }
 #send{
 	margin-right: 5px;
+}
+.cur-pointer{
+	cursor: pointer;
 }
