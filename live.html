@@ -285,9 +285,10 @@
                 var html = "";
                 res.data&&res.data.forEach(function(item) {
                 	if(item.uid==userid){
-                		if(item.status==1 || item.status==2){
-                			iswords=item.status==1;
-                			isKickout=item.status==2;
+                		if(["1","2"].indexOf(item.status)==0){
+                			iswords=true;
+                		}else if(["1","2"].indexOf(item.status)==1){
+                			location.reload()
                 		}
                 	}
                 	html+='<li class="flex just-between align-center" data-id="'+item.uid+'">'
