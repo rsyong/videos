@@ -76,8 +76,14 @@
                     </div>
                     <div class="flex1 subList-online">
                         <ul id="subList-online">
-                            <!--<li>
-                                <img src="http://lyg.goluckin.com/themes/v2/static/images/17yk.png" />asd
+                            <!--<li class="flex just-between align-center">
+                                <div class="flex1"><img src="http://lyg.goluckin.com/themes/v2/static/images/17yk.png" />asd</div>
+                                <div>
+                                	<div class="flex">
+                                		<div class="sn-btn" title="禁言">禁言</div>
+                                		<div class="sn-btn" title="踢出">踢出</div>
+                                	</div>
+                                </div>
                             </li>-->
                         </ul>
                     </div>
@@ -98,7 +104,7 @@
                     <!--<embed width="300" height="70" class="openFlash" style="position:absolute;z-Index:9999;" type="application/x-shockwave-flash">-->
                 </div>
                 <div class="content-bottom back mt-10">
-                	<div class="flex align-center" style="height: 100%;padding: 0 1rem;">
+                	<div class="flex align-center content-bottom-center" style="height: 100%;padding: 0 1rem;">
                 		<div id="publishBtn" class="content-bottom-list" onclick="startPublish()">开始直播</div>
                 		<div id="begin" class="content-bottom-list">播放</div>
                 		<div id="stop" class="content-bottom-list">暂停</div>
@@ -158,6 +164,8 @@
         var liveid=$('#liveid').val();
         var isBottom = true; //是否刷新到底部
         var times = '',timesS=''; //计时器
+        var iswords=false;//禁言
+        var isKickout=false;//提出房间
         if(isRoleName){
         	$("#my-video-all").remove();
         	$("#copy").hide();
@@ -276,9 +284,24 @@
                 typeof res == "string" && (res = JSON.parse(res));
                 var html = "";
                 res.data&&res.data.forEach(function(item) {
-					html+='<li data-id="'+item.uid+'">'
-                                +'<img src="http://lyg.goluckin.com/themes/v2/static/images/17yk.png" />'+item.name
+                	if(item.uid==userid){
+                		if(item.status==1 || item.status==2){
+                			iswords=item.status==1;
+                			isKickout=item.status==2;
+                		}
+                	}
+                	html+='<li class="flex just-between align-center" data-id="'+item.uid+'">'
+                                +'<div class="flex1"><img src="http://lyg.goluckin.com/themes/v2/static/images/17yk.png" />'+item.name+'</div>'
+                                +'<div>'
+                                	+'<div class="flex">'
+                                		+'<div class="sn-btn" title="禁言" data-status="1">禁言</div>'
+                                		+'<div class="sn-btn" title="踢出" data-status="2">踢出</div>'
+                                	+'</div>'
+                                +'</div>'
                             +'</li>'
+//					html+='<li data-id="'+item.uid+'">'
+//                              +'<img src="http://lyg.goluckin.com/themes/v2/static/images/17yk.png" />'+item.name
+//                          +'</li>'
                 })
 
 				$.get("http://lyg.goluckin.com/index.php/userstatus/useronline", {
@@ -286,8 +309,13 @@
             	})
                 $("#subList-online").html(html);
                 if(isRoleName){
-                	$("#subList-online li").on("click", function() {
+                	$("#subList-online li").on("click", function(e) {
+                		e.stopPropagation();
 	                    changeStu($(this).attr("data-id"))
+	                })
+                	$(".sn-btn").on("click", function(e) {
+                		e.stopPropagation();
+	                    changeStuStatus($(this).attr("data-status"),$(this).closest(".align-center").attr("data-id"))
 	                })
                 }
             })
@@ -330,6 +358,14 @@
         })
         //发送消息
         function send() {
+        	if(iswords) {
+        		layer.msg("你已被禁言");
+        		return;
+        	}
+        	if(isKickout) {
+        		layer.msg("你已被踢出房间");
+        		return;
+        	}
             var sendVal = $("#send").val();
             if (sendVal == '') {
                 layer.msg("发送不能为空！")
@@ -400,6 +436,16 @@
             }, function(res) {
                 typeof res == "string" && (res = JSON.parse(res));
                 layer.msg("切换成功");
+            })
+        }
+        function changeStuStatus(status,uid){
+        	$.get(API + "chataudit", {
+                userid: uid,
+                status:status,
+                roomid:roomid
+            }, function(res) {
+                typeof res == "string" && (res = JSON.parse(res));
+                layer.msg(res.msg);
             })
         }
         //复制源地址

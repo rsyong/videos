@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			.room{
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<input id="username" placeholder="账号" />
+		<input id="nickname" placeholder="用户名" />
+		<input id="password" placeholder="密码" type="password" />
+		<button id="regiset">注册</button>
+		<div class="room">
+			<input placeholder="房间名称" id="room" />
+			<button id="roombt">创建房间</button>
+		</div>
+		<div id="wbord" style="height: 500px;width: 500px;border: 1px solid #000;"></div>
+	</body>
+	<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+	<script type="text/javascript" src="sdk/NIM_Web_NIM_v6.4.0.js" ></script>
+	<script type="text/javascript" src="sdk/NIM_Web_WhiteBoard_v6.4.0.js" ></script>
+	<script type="text/javascript" src="sdk/DrawPlugin.js" ></script>
+	<script type="text/javascript" src="sdk/md5.js" ></script>
+	<script type="text/javascript" src="sdk/ajax.js" ></script>
+	<script type="text/javascript">
+		function login(account, token){
+			window.nim = window.NIM.getInstance({
+				debug: false,
+		        // debug: true && { api: 'info', style: 'font-size:12px;color:blue;background-color:rgba(0,0,0,0.1)' },
+		        appKey: "1ee5a51b7d008254cd73b1d4369a9494",
+		        account:account,
+		        token:token,
+		        db: false,
+		        syncSessionUnread: true,
+		        syncRobots: true,
+		        autoMarkRead: true, // 默认为true
+		        onconnect: function(event) {
+		          console.log(JSON.stringify(event)+"im连接成功....");
+		          $(".room").show();
+		          init();
+		          $("#roombt").on("click",function(){
+		          	if($("#room").val()=='') {return alert("不能为空")}
+		          	ajax({
+		          		type:"POST",
+		          		url:"https://app.netease.im/api/chatroom/create",
+		          		dataType: "json",
+		          		data:{
+		          			creator: account,
+					        name: $("#room").val()
+		          		}
+		          	}).then(res=>{
+		          		let roomid=res.msg;
+		          		localStorage.roomid=roomid;
+		          		ajax({
+		          			type:"POST",
+			          		url:"https://app.netease.im/api/chatroom/getAddress",
+			          		dataType: "form",
+			          		data:{
+			          			uid: account,
+							    roomid: roomid
+			          		}
+		          		}).then(res=>{
+		          			localStorage.roomMsg=JSON.stringify(res.msg);
+		          			init();
+		          		})
+		          	})
+		          })
+		        },
+		        onmsg:function(data){
+		        	console.log(data,'收到消息')
+		        },
+		        oncustomsysmsg:function(data){
+		        	console.log(data,'收到系统消息')
+		        }
+			})
+		}
+		
+		function init(){
+			if(!localStorage.roomMsg) return;
+			var roomMsg=JSON.parse(localStorage.roomMsg);
+			if(typeof roomMsg.ext=="string"){
+				roomMsg.ext=JSON.parse(roomMsg.ext)
+			}
+			console.log(roomMsg) //108083456
+			window.wb = WhiteBoard.getInstance({
+				nim:window.nim,
+				debug:true
+			})
+			window.drawPlugin = new DrawPlugin(document.getElementById("wbord"), {
+			  UID: window.wb.getAccount(),
+			  nim: window.nim  // nim实例
+			})
+			drawPlugin.enableDraw(true)
+			drawPlugin.on('data', (obj) => {
+			  let { toAccount = 0, data } = obj
+			  wb.sendData({ toAccount, data })
+			})
+			wb.on('data', (obj) => {
+			  drawPlugin.act({ account: obj.account, data: obj.data })
+			});
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		login('yb',MD5('123456'));
+		$("#regiset").on("click",function(){
+			$.ajax({
+				type:"POST",
+				url:"https://app.netease.im/api/createDemoUser",
+				async:true,
+				dataType: "form",
+				headers:{
+					appkey:'1ee5a51b7d008254cd73b1d4369a9494'
+				},
+				data: {
+			      	username: $("#username").val(),
+				    nickname: $("#nickname").val(),
+				    password: MD5($("#password").val())
+			     }
+			});
+		})
+	</script>
+</html>

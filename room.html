@@ -35,6 +35,17 @@
             margin-left: 10px;
             display: inline-block;
         }
+        .ation {
+		    display: inline-block;
+		    width: 34px;
+		    height: 34px;
+		    line-height: 34px;
+		    position: relative;
+		}
+        .operation_raise {
+        	background: url(img/bg_smaall.png) no-repeat;
+		    background-position: -100px -1px;
+		}
     </style>
 </head>
 
@@ -75,7 +86,9 @@
     <div class="main">
         <div class="flex just-between">
             <div class="gs-title">
-                <span class="gs-live-in">直播未开始</span>
+                <span class="gs-live-in">直播未开始
+                	<a class="ation operation_raise " href="javascript:;"></a>
+                </span>
                 <?=$userinfo['uid']?> 角色
                     <?=$userinfo['roleName']?>
             </div>

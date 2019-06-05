@@ -21,10 +21,10 @@ body{
 .align-center{
 	align-items: center;
 }
-.align-center div{
+.content-bottom-center div{
 	transition: .6s;
 }
-.align-center div:hover{
+.content-bottom-center div:hover{
 	opacity: .7;
 }
 .back{
@@ -137,8 +137,8 @@ ul{
 	position: relative;
 }
 .content-left-bottom{
-	height: 35rem;
-	max-height: 35rem;
+	height: 31rem;
+	max-height: 31rem;
 }
 .content-center{
 	flex: 1;
@@ -292,4 +292,20 @@ background-color:#bbb;
 }
 .cur-pointer{
 	cursor: pointer;
+}
+.sn-btn{
+	background-color: #0298d4;
+    color: #fff;
+    padding: 3px 15px;
+    border-radius: 5px;
+    border: none;
+    text-decoration: none;
+    margin-right: 8px;
+    transition: .6s;
+}
+.sn-btn:hover{
+	opacity: .7;
+}
+.sn-btn:last-child{
+	margin-right: 0;
 }
