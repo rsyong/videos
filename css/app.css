@@ -137,12 +137,11 @@ ul{
 	position: relative;
 }
 .content-left-bottom{
-	height: 31rem;
-	max-height: 31rem;
+	height: 15rem;
+	max-height: 15rem;
 }
 .content-center{
 	flex: 1;
-	
 }
 .content-bottom {
 	height: 60px;
@@ -265,7 +264,6 @@ background-color:#bbb;
 .content-bottom-list{
 	background-color: #0298d4;
     color: #fff;
-    padding: 3px 15px;
     border-radius: 5px;
     transition: .6s;
     border: none;
@@ -274,6 +272,20 @@ background-color:#bbb;
 	cursor: pointer;
 	padding: 5px 15px;
 	margin-right: 10px;
+}
+.count-list{
+	background-color: #0298d4;
+	color: #fff;
+	padding: 1px 10px;
+	border-radius: 5px;
+    transition: .6s;
+    margin-right: 10px;
+    height: 20px;
+    line-height: 20px;
+    cursor: pointer;
+}
+.count-list:hover{
+	opacity: .7;
 }
 .material_btn{
 	background-color: #0298d4;

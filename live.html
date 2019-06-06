@@ -5,12 +5,11 @@
     <meta charset="utf-8" />
     <title></title>
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE10" > 
-    <script type="text/javascript" src="http://lyg.goluckin.com/themes/js/nePublisher.min.js" ></script>
-    <link rel="stylesheet" type="text/css" href="http://www.bootcss.com/p/buttons/css/buttons.css">
-    <link href="//vjs.zencdn.net/5.19/video-js.min.css" rel="stylesheet">
-    <!--<link rel="stylesheet" href="css/app.css" />-->
-    <link rel="stylesheet" href="http://lyg.goluckin.com/themes/css/app.css" />
-	<script src="http://gz.ybinu.cn/video5.18/js/video.min.js"></script>
+    <link rel="stylesheet" href="static/css/buttons.css" />
+    <link rel="stylesheet" href="static/css/video-js.min.css" />
+    <link rel="stylesheet" href="css/app.css" />
+    <script type="text/javascript" src="static/js/nePublisher.js" ></script>
+	<script src="static/js/video.min.js"></script>
 </head>
 
 <body>
@@ -59,11 +58,25 @@
         </div>
         <div class="content flex">
             <div class="content-left">
-                <div class="content-left-top back">
+                <div class="content-left-top back" data-src = "rtmp://no3.ybinu.cn:1935/hls/<?php echo $roomid?>">
+                    <div id="my-publisher-all">
+                		<div id="my-publisher"></div>
+                	</div>
+                    <!-- <img src="./img/doc_bg.png" style="width: 260px;"> -->
+                    <div id="my-video-all" style="color:black;width:100%;height:100%">
+                    	<video id="my-video" style="color:black;width:100%;height:100%" class="video-js vjs-big-play-centered" autoplay controls preload="auto" data-setup="{}">
+							<source src="rtmp://no3.ybinu.cn:1935/hls/<?php echo $roomid?>" type="rtmp/flv">
+							<!--<source src="rtmp://ns8.indexforce.com/home/mystream" type="rtmp/flv">-->
+						</video>
+                    </div>
+                </div>
+                <div class="content-left-top back mt-10">
                     <video id="my-video2" style="color:black;width:100%;height:100%" class="video-js" autoplay controls preload="auto" width="750" height="350" data-setup="{}">
 						<source id="my-source" src="rtmp://v9a6d110b.live.126.net/live/382830b04fe7421198f7902b979c327f" type="rtmp/flv">
-						<!--<source src="rtmp://ns8.indexforce.com/home/mystream" type="rtmp/flv">-->
 					</video>
+					<?php $isIE = strpos($_SERVER['HTTP_USER_AGENT'],"Triden"); if(!$isIE){?>
+					<embed width="300" height="70" class="openFlash" style="position:absolute;z-Index:9999;top:0;" type="application/x-shockwave-flash">
+					<?php } ?>
 					<div style="position: absolute;width: 100%;height: 100%;top: 0;left: 0;z-index: -10;" id="my-publisher2-all">
 						<div id="my-publisher2"></div>
 					</div>
@@ -90,18 +103,14 @@
                 </div>
             </div>
             <div class="flex1 ml-10 flex flex-column">
-                <div class="content-center back flex just-center align-center" data-src = "rtmp://no3.ybinu.cn:1935/hls/<?php echo $roomid?>">
-                	<div id="my-publisher-all">
-                		<div id="my-publisher"></div>
+                <div class="content-center back">
+                	<div class="flex gs-userlist-count align-center">
+                		<div class="count-list">白板</div>
+                		<div class="count-list">分享屏幕</div>
                 	</div>
-                    <!-- <img src="./img/doc_bg.png" style="width: 260px;"> -->
-                    <div id="my-video-all" style="color:black;width:100%;height:100%">
-                    	<video id="my-video" style="color:black;width:100%;height:100%" class="video-js vjs-big-play-centered" autoplay controls preload="auto" width="750" height="350" data-setup="{}">
-							<source src="rtmp://no3.ybinu.cn:1935/hls/<?php echo $roomid?>" type="rtmp/flv">
-							<!--<source src="rtmp://ns8.indexforce.com/home/mystream" type="rtmp/flv">-->
-						</video>
-                    </div>
-                    <!--<embed width="300" height="70" class="openFlash" style="position:absolute;z-Index:9999;" type="application/x-shockwave-flash">-->
+                	<div style="height: calc(100% - 34px);">
+                		<div id="wbord" style="height: 100%;width: 100%;"></div>
+                	</div>
                 </div>
                 <div class="content-bottom back mt-10">
                 	<div class="flex align-center content-bottom-center" style="height: 100%;padding: 0 1rem;">
@@ -142,7 +151,6 @@
         </div>
         <input value="1" id="copyValue" style="opacity: 0;height: 0;width: 1px;" />
     </div>
-   </div>
     <input id="user_id" type="hidden" value="<?php echo $userinfo['uid']?>">
 	<input id="roomid" type="hidden" value="<?php echo $roomid?>">
 	<input id="roleName" type="hidden" value="<?php echo $userinfo['roleName']?>">
@@ -150,12 +158,18 @@
 	<input id="roleCode" type="hidden" value="<?php echo $userinfo['roleCode']?>">
 	<input id="liveid" type="hidden" value="<?php echo $liveid?>">
 </body>
-<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
-<script type="text/javascript" src="http://lyg.goluckin.com/themes/js/layer.js" ></script>
-<script type="text/javascript" src="http://lyg.goluckin.com/themes/js/common.js" ></script>
-<!--<script type="text/javascript" src="js/common.js"></script>-->
+<script type="text/javascript" src="static/js/jquery.min.js" ></script>
+<script type="text/javascript" src="static/WhiteBoardSDK/NIM_Web_NIM_v6.4.0.js" ></script>
+<script type="text/javascript" src="static/WhiteBoardSDK/NIM_Web_WhiteBoard_v6.4.0.js" ></script>
+<script type="text/javascript" src="static/WhiteBoardSDK/DrawPlugin.js" ></script>
+<script type="text/javascript" src="static/js/md5.js" ></script>
+<script type="text/javascript" src="static/js/ajax.js" ></script>
+<script type="text/javascript" src="static/layerSDK/layer.js" ></script>
+<script type="text/javascript" src="static/js/common.js" ></script>
 <script type="text/javascript">
+//	"username=350111201201101097; roleCode=Student; Token=716b545a"
     $(function() {
+    	var username=getCookie("username");
         var roomid = $('#roomid').val(); //房间号
         var userid = $('#user_id').val();//学生id
         var techerid=$('#tid').val();//教师id
@@ -300,15 +314,12 @@
                                 		+'<div class="sn-btn" title="踢出" data-status="2">踢出</div>'
                                 	+'</div>'
                                 +'</div>'
-                            +'</li>'
-//					html+='<li data-id="'+item.uid+'">'
-//                              +'<img src="http://lyg.goluckin.com/themes/v2/static/images/17yk.png" />'+item.name
-//                          +'</li>'
+                            +'</li>';
                 })
 
-				$.get("http://lyg.goluckin.com/index.php/userstatus/useronline", {
-                	roomid: roomid
-            	})
+//				$.get("http://lyg.goluckin.com/index.php/userstatus/useronline", {
+//              	roomid: roomid
+//          	})
                 $("#subList-online").html(html);
                 if(isRoleName){
                 	$("#subList-online li").on("click", function(e) {
@@ -498,7 +509,83 @@
 	        	typeof res == "string" && (res = JSON.parse(res));
 	        	layer.msg("结束成功");
 	        })
-	   	} 
+	   	}
+	    //白板模块
+	    if(!username) return alert("未登录");
+	    var nim=wb=drawPlugin='',appkey='1ee5a51b7d008254cd73b1d4369a9494';
+	    var wbAPI='https://app.netease.im/api';
+	    //登录IM
+	    login(username,MD5('123456'));
+	    
+	    function login(account, token){
+			NIM.use(WhiteBoard)
+			nim = window.NIM.getInstance({
+				debug: false,
+		        appKey: appkey,
+		        account:account,
+		        token:token,
+		        db: false,
+		        syncSessionUnread: true,
+		        syncRobots: true,
+		        autoMarkRead: true, // 默认为true
+		        ondisconnect:function (event) {
+		        	if(event.code=="302"){
+		        		regiset(account,token);
+		        	}
+		        },
+		        onconnect: function(event) {
+		          console.log(JSON.stringify(event)+"im连接成功....");
+		          init();
+		          return;
+		          $("#roombt").on("click",function(){
+		          	if($("#room").val()=='') {return alert("不能为空")}
+		          	ajax({
+		          		type:"POST",
+		          		url:wbAPI+"/chatroom/create",
+		          		dataType: "json",
+		          		data:{
+		          			creator: account,
+					        name: $("#room").val()
+		          		}
+		          	}).then(res=>{
+		          		let roomid=res.msg;
+		          		localStorage.roomid=roomid;
+		          		ajax({
+		          			type:"POST",
+			          		url:"https://app.netease.im/api/chatroom/getAddress",
+			          		dataType: "form",
+			          		data:{
+			          			uid: account,
+							    roomid: roomid
+			          		}
+		          		}).then(res=>{
+		          			localStorage.roomMsg=JSON.stringify(res.msg);
+		          			init();
+		          		})
+		          	})
+		          })
+		        }
+			})
+		}
+	    function regiset(account,token){
+	    	ajax({
+          		type:"POST",
+          		url:wbAPI+"/createDemoUser",
+          		dataType: "form",
+          		headers:{
+					appkey:appkey
+				},
+          		data:{
+          			username: account,
+				    nickname:'lyg'+account,
+				    password: token
+          		}
+          	}).then(res=>{
+          		console.log(res,1)
+          	}).catch(err=>{
+          		console.log(res,2)
+          	})
+	    }
     })
 </script>
 <script type="text/javascript">
@@ -543,9 +630,6 @@
             }
             document.getElementById("cameraSelect").innerHTML = cameraOptions;
             document.getElementById("microPhoneSelect").innerHTML = microPhoneOptions;
-            if(isRoleName) {
-//              	startPublish()
-            };
             
         }, function(code, desc) {
             console.log(code, desc);
