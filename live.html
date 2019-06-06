@@ -285,9 +285,10 @@
                 var html = "";
                 res.data&&res.data.forEach(function(item) {
                 	if(item.uid==userid){
-                		if(["1","2"].indexOf(item.status)==0){
+                		if(item.status.indexOf("1")>-1){
                 			iswords=true;
-                		}else if(["1","2"].indexOf(item.status)==1){
+                		}
+                		if(item.status.indexOf("2")>-1){
                 			location.reload()
                 		}
                 	}
