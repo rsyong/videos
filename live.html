@@ -5,11 +5,16 @@
     <meta charset="utf-8" />
     <title></title>
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE10" > 
-    <link rel="stylesheet" href="static/css/buttons.css" />
+    <link rel="stylesheet" href="/themes/static/css/buttons.css" />
+    <link rel="stylesheet" href="/themes/static/css/video-js.min.css" />
+    <link rel="stylesheet" href="/themes/static/css/app.css" />
+    <script type="text/javascript" src="/themes/static/js/nePublisher.js" ></script>
+	<script src="/themes/static/js/video.min.js"></script>
+	<!--<link rel="stylesheet" href="static/css/buttons.css" />
     <link rel="stylesheet" href="static/css/video-js.min.css" />
     <link rel="stylesheet" href="static/css/app.css" />
     <script type="text/javascript" src="static/js/nePublisher.js" ></script>
-	<script src="static/js/video.min.js"></script>
+	<script src="static/js/video.min.js"></script>-->
 </head>
 
 <body>
@@ -107,6 +112,13 @@
                 	<div class="flex gs-userlist-count align-center">
                 		<div class="count-list">白板</div>
                 		<div class="count-list">分享屏幕</div>
+                		<div style="position: relative;">
+                			<div class="count-list" id="file_ppt">上传文件</div>
+                			<input style="position: absolute;top: 0;left: 0;width: 100%;height: 20px;opacity: 0;" type="file" accept=".pdf,.ppt,.pptx"/>
+                		</div>
+                		<div>
+                			<button class="count-list" id="getFliles">拉取列表</button>
+                		</div>
                 	</div>
                 	<div style="height: calc(100% - 34px);" class="count-list-c">
                 		<div id="wbord" style="height: 100%;width: 100%;background-color: #fff;"></div>
@@ -126,6 +138,9 @@
                 		<!--<div id="worklist" class="content-bottom-list">作业列表</div>-->
                 		<a class="ation operation_raise2 back-img" href="javascript:;" id="worklist" title="作业列表"></a>
                 		<a class="ation operation_raise back-img" href="javascript:;" id="hands" title="举手"></a>
+                		<div id="prevpages" class="content-bottom-list">上一页</div>
+                		<div id="nextspages" class="content-bottom-list">下一页</div>
+                		<div id="clearFile" class="content-bottom-list">关闭文档</div>
                 	</div>
                 </div>
             </div>
@@ -161,14 +176,22 @@
 	<input id="roleCode" type="hidden" value="<?php echo $userinfo['roleCode']?>">
 	<input id="liveid" type="hidden" value="<?php echo $liveid?>">
 </body>
-<script type="text/javascript" src="static/js/jquery.min.js" ></script>
+<script type="text/javascript" src="/themes/static/js/jquery.min.js" ></script>
+<script type="text/javascript" src="/themes/static/WhiteBoardSDK/NIM_Web_NIM_v6.4.0.js" ></script>
+<script type="text/javascript" src="/themes/static/WhiteBoardSDK/NIM_Web_WhiteBoard_v6.4.0.js" ></script>
+<script type="text/javascript" src="/themes/static/WhiteBoardSDK/DrawPlugin.js" ></script>
+<script type="text/javascript" src="/themes/static/js/md5.js" ></script>
+<script type="text/javascript" src="/themes/static/js/ajax.js" ></script>
+<script type="text/javascript" src="/themes/static/layerSDK/layer.js" ></script>
+<script type="text/javascript" src="/themes/static/js/common.js" ></script>
+<!--<script type="text/javascript" src="static/js/jquery.min.js" ></script>
 <script type="text/javascript" src="static/WhiteBoardSDK/NIM_Web_NIM_v6.4.0.js" ></script>
 <script type="text/javascript" src="static/WhiteBoardSDK/NIM_Web_WhiteBoard_v6.4.0.js" ></script>
 <script type="text/javascript" src="static/WhiteBoardSDK/DrawPlugin.js" ></script>
 <script type="text/javascript" src="static/js/md5.js" ></script>
 <script type="text/javascript" src="static/js/ajax.js" ></script>
 <script type="text/javascript" src="static/layerSDK/layer.js" ></script>
-<script type="text/javascript" src="static/js/common.js" ></script>
+<script type="text/javascript" src="static/js/common.js" ></script>-->
 <script type="text/javascript">
 //	"username=350111201201101097; roleCode=Student; Token=716b545a"
     $(function() {
@@ -179,6 +202,9 @@
         var isRoleName=$('#roleName').val()=='教师'; //角色是否是教师
         var roleCode=$('#roleCode').val();
         var liveid=$('#liveid').val();
+        if(!username) {
+        	username=userid;
+        }
         var isBottom = true; //是否刷新到底部
         var times = '',timesS=''; //计时器
         var iswords=false;//禁言
@@ -518,11 +544,10 @@
 	   	}
 	    //白板模块
 	    if(!username) return alert("未登录");
-	    var nim=wb=drawPlugin='',appkey='1ee5a51b7d008254cd73b1d4369a9494';
+	    var nim=wb=drawPlugin='',appkey='1ee5a51b7d008254cd73b1d4369a9494',StoreWhiteBoard={};
 	    var wbAPI='https://app.netease.im/api';
-	    var ISStudent=getCookie("roleCode")=="Student";
 	    //登录IM
-	    login(username,MD5('123456'));
+	    login(username.substring(username.length-10),MD5('123456'));
 	    
 	    function login(account, token){
 			NIM.use(WhiteBoard)
@@ -542,28 +567,14 @@
 		        },
 		        onconnect: function(event) {
 		          console.log(JSON.stringify(event)+"im连接成功....");
-		          if(localStorage.roomid){
-		          	initWB()
-		          }else{
-		          	if(ISStudent){
-			          	layer.prompt({title: '请输入白板房间ID', formType: 0}, function(text, index){
-			          	    if (!/^[0-9]{8,9}$/.test(text)) {
-				                layer.msg('房间ID不存在');
-				                return;
-				            }
-						    layer.close(index);
-						    localStorage.roomid=text;
-						    initWB()
-						});
-			        }else{
-			        	initFetch(account);
-			        }
-		          }
+		          initWB();
 		        }
 			})
 		}
 	    function joinChannelWb(roomId){
 	    	if (!wb) return alert('wb::没有实例化');
+	    	console.log(roomId,"房间号")
+	    	if(!roomId) return alert('wb::没有房间号');
 			wb.joinChannel({
 	        	channelName: roomId
         	}).then(res=>{
@@ -571,7 +582,7 @@
         	}).catch(err=>{
         		console.log(err,22)
 //      		if(isTeacher==1) return;
-				if(ISStudent) return layer.msg('加入房间失败');;
+				if(!isRoleName) return layer.msg('加入房间失败');;
         		wb.createChannel({
 		            channelName: roomId
 		        }).then(res=>{
@@ -591,9 +602,9 @@
 			  nim: nim  // nim实例
 			})
 	    	
-	    	joinChannelWb(localStorage.roomid); //加入白板房间
+	    	joinChannelWb(roomid); //加入白板房间
 	    	
-	    	drawPlugin.enableDraw(!ISStudent); //是否可以操作白板
+	    	drawPlugin.enableDraw(isRoleName); //是否可以操作白板
 	    	
 			drawPlugin.on('data', (obj) => {
 			  let { toAccount = 0, data } = obj
@@ -603,33 +614,12 @@
 			wb.on('data', (obj) => {
 			  drawPlugin.act({ account: obj.account, data: obj.data })
 			});
-	    }
-	    function initFetch(account){
-	    	ajax({
-          		type:"POST",
-          		url:wbAPI+"/chatroom/create",
-          		dataType: "json",
-          		data:{
-          			creator: account,
-			        name: "zhibo"
-          		}
-          	}).then(res=>{
-          		let roomid=res.msg;
-		        localStorage.roomid=roomid;
-          	}).catch(err=>{
-          		ajax({
-          			type:"POST",
-	          		url:wbAPI+"/chatroom/getAddress",
-	          		dataType: "form",
-	          		data:{
-	          			uid: account,
-					    roomid: roomid
-	          		}
-          		}).then(res=>{
-          			localStorage.roomMsg=JSON.stringify(res.msg);
-          			initWB();
-          		})
-          	})
+			nim.on('notifyTransLog', function(data) {
+	            console.log('notifyTransLog', data);
+	            // data.state = WhiteBoardState.serializeFileStateMap['TRANSCOMPLETE'];
+	            // data.percent = 100;
+	            StoreWhiteBoard.data=data;
+	        });
 	    }
 	    function regiset(account,token){
 	    	ajax({
@@ -652,6 +642,129 @@
           		alert("注册出错！");
           	})
 	    }
+	    $("#file_ppt").on("change",function(){
+	    	var fileInput=document.getElementById("file_ppt");
+	    	const param = {
+		      // 转码支持
+		      transcode: 'jpg',
+		      type: 'file',
+		      fileInput:fileInput,
+		      beginupload(data) {
+		        // - 如果开发者传入 fileInput, 在此回调之前不能修改 fileInput
+		        // - 在此回调之后可以取消图片上传, 此回调会接收一个参数 `upload`, 调用 `upload.abort();` 来取消文件上传
+		        const { fileInputName, transtype, docId } = data.options;
+		        console.log('beginupload', data.options);
+		        console.log('fileInputName type', fileInputName, transtype);
+		        StoreWhiteBoard.docId=docId;
+//		        StoreWhiteBoard.addFile({
+//		          docId,
+//		          name: fileInputName,
+//		          mime: transtype,
+//		          state: 11,
+//		          percent: 0,
+//		          prefix: ''
+//		        });
+		      },
+		      uploadprogress(data) {
+		        console.log('uploadprogress', data);
+		      },
+		      uploaddone(error, file) {
+		        console.log('uploaddone', error, file, docId);
+		      },
+		      done(a, b) {
+		        console.log('send file done', a, b);
+		      }
+		    };
+		    nim.previewFile(param);
+	    })
+	    $("#getFliles").on("click",function(){
+	    	getFliles()
+	    })
+	    var setImageObj={},pageIndx=1;
+	    function getFliles(){
+	    	console.log(StoreWhiteBoard.docId,111)
+	    	nim.getFileList({
+		      fromDocId: StoreWhiteBoard.docId,
+		      limit: 30,
+		      success: function(data) {
+		        console.log('getFileList success', data);
+		        var html = '<ul class="material">';
+                data.list.forEach(function(item,index) {
+                    html += '<li class="flex just-between">'
+				                +'<div>'+item.name+'</div>'
+				                +'<div>'
+					                +'<a href="javaScript:void(0)" data-index='+index+' class="material_btn material_btn2">使用</a>'
+					                +'<a href="javaScript:void(0)" data-index='+index+' class="material_btn material_delete">删除</a>'
+				                +'</div>'
+				            +'</li>'
+                })
+                html+='</ul>';
+                layer.open({
+				  title: '作业列表',
+					  area:['500px','auto'],
+					  btn:[],
+					  content: html
+				}); 
+				$(".material_btn2").on("click",function(){
+					let i=$(this).attr("data-index");
+					setImageObj=data.list[i];
+					pageIndx=1;
+					setImage();
+					layer.closeAll();
+				})
+				$(".material_delete").on("click",function(){
+					let i=$(this).attr("data-index");
+					nim.deleteFile({
+			            docId:data.list[i].docId,
+			            error: function(a, b) {
+			                console.error('deleteFile error', a, b);
+			            },
+			            success: function() {
+			                console.log('deleteFile success');
+			                getFliles();
+			            }
+			        });
+				})
+		      },
+		      error: function(error) {
+		        console.error('getFileList error', error);
+		      }
+		    });
+	    }
+	    function setImage(){
+	    	var item=setImageObj;
+	    	console.log('setImage', item);
+	        const name = item.name.replace(/\.\w+$/, '');
+	        const url = `${item.prefix}_${item.type}_${pageIndx}.jpg`;
+	        drawPlugin &&
+	            drawPlugin.image({
+	                url,
+	                docId: item.docId,
+	                pageCount: item.pageCount,
+	                currentPage: pageIndx
+	            });
+	        $("#prevpages,#nextspages,#clearFile").show();
+	        layer.msg("当前页数"+pageIndx+"\n\n"+"总共"+item.pageCount);
+	    }
+	    $("#prevpages").on("click",function(){
+	    	if(pageIndx<=1){
+	    		return layer.msg("已经第一页了")
+	    	}
+	    	pageIndx--;
+	    	setImage();
+	    	
+	    })
+	    $("#nextspages").on("click",function(){
+	    	if(pageIndx>=setImageObj.pageCount){
+	    		return layer.msg("已经最后一页了")
+	    	}
+	    	pageIndx++;
+	    	setImage();
+	    })
+	    $("#clearFile").on("click",function(){
+	    	drawPlugin && drawPlugin.clearImage();
+	    	$("#prevpages,#nextspages,#clearFile").hide();
+	    })
     })
 </script>
 <script type="text/javascript">
@@ -669,12 +782,12 @@
         var ids='my-publisher2',mClass='.content-left-top';
         if(isRoleName){
         	ids='my-publisher';
-        	mClass='.content-center';
+        	mClass='.content-left-top';
         }
         var myPublisher = new nePublisher(ids, {
             //viewOptions
-            videoWidth: 960,
-            videoHeight: 540,
+            videoWidth: $(mClass).width(),
+            videoHeight: $(mClass).height(),
             fps: 20,
             bitrate: 1500
         }, {

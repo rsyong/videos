@@ -324,3 +324,13 @@ background-color:#bbb;
 .share{
 	display: none;
 }
+#getFliles{
+	border: none;
+}
+#prevpages,#nextspages,#clearFile{
+	display: none;
+}
+.material_delete{
+	background-color: red;
+	margin-left: 8px;
+}
