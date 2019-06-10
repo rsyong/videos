@@ -5,11 +5,16 @@
     <meta charset="utf-8" />
     <title></title>
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE10" > 
-    <link rel="stylesheet" href="static/css/buttons.css" />
+    <link rel="stylesheet" href="/themes/static/css/buttons.css" />
+    <link rel="stylesheet" href="/themes/static/css/video-js.min.css" />
+    <link rel="stylesheet" href="/themes/static/css/app.css" />
+    <script type="text/javascript" src="/themes/static/js/nePublisher.js" ></script>
+	<script src="/themes/static/js/video.min.js"></script>
+	<!--<link rel="stylesheet" href="static/css/buttons.css" />
     <link rel="stylesheet" href="static/css/video-js.min.css" />
-    <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" href="static/css/app.css" />
     <script type="text/javascript" src="static/js/nePublisher.js" ></script>
-	<script src="static/js/video.min.js"></script>
+	<script src="static/js/video.min.js"></script>-->
 </head>
 
 <body>
@@ -58,19 +63,18 @@
         </div>
         <div class="content flex">
             <div class="content-left">
-                <div class="content-left-top back" data-src = "rtmp://no3.ybinu.cn:1935/hls/<?php echo $roomid?>">
+                <div class="content-left-top content-left-top1 back" data-src = "rtmp://streamsrv.xueerqin.net/hls/<?php echo $roomid?>">
                     <div id="my-publisher-all">
                 		<div id="my-publisher"></div>
                 	</div>
                     <!-- <img src="./img/doc_bg.png" style="width: 260px;"> -->
                     <div id="my-video-all" style="color:black;width:100%;height:100%">
                     	<video id="my-video" style="color:black;width:100%;height:100%" class="video-js vjs-big-play-centered" autoplay controls preload="auto" data-setup="{}">
-							<source src="rtmp://no3.ybinu.cn:1935/hls/<?php echo $roomid?>" type="rtmp/flv">
-							<!--<source src="rtmp://ns8.indexforce.com/home/mystream" type="rtmp/flv">-->
+							<source src="rtmp://streamsrv.xueerqin.net/hls/<?php echo $roomid?>" type="rtmp/flv">
 						</video>
                     </div>
                 </div>
-                <div class="content-left-top back mt-10">
+                <div class="content-left-top content-left-top2 back mt-10">
                     <video id="my-video2" style="color:black;width:100%;height:100%" class="video-js" autoplay controls preload="auto" width="750" height="350" data-setup="{}">
 						<source id="my-source" src="rtmp://v9a6d110b.live.126.net/live/382830b04fe7421198f7902b979c327f" type="rtmp/flv">
 					</video>
@@ -107,9 +111,21 @@
                 	<div class="flex gs-userlist-count align-center">
                 		<div class="count-list">白板</div>
                 		<div class="count-list">分享屏幕</div>
+                		<div style="position: relative;">
+                			<div class="count-list">上传文件</div>
+                			<input  id="file_ppt" style="position: absolute;top: 0;left: 0;width: 100%;height: 20px;opacity: 0;" type="file" accept=".pdf,.ppt,.pptx"/>
+                		</div>
+                		<div>
+                			<button class="count-list" id="getFliles">拉取列表</button>
+                		</div>
                 	</div>
-                	<div style="height: calc(100% - 34px);">
-                		<div id="wbord" style="height: 100%;width: 100%;"></div>
+                	<div style="height: calc(100% - 34px);" class="count-list-c">
+                		<div id="wbord" style="height: 100%;width: 100%;background-color: #fff;"></div>
+                	</div>
+                	<div style="height: calc(100% - 34px);" class="count-list-c share">
+                		<div style="height: 100%;width: 100%;background-color: #fff;">
+                			<div class="count-list" id="share_now" style="display: inline-block;margin: 15px;">分析当前屏幕</div>
+                		</div>
                 	</div>
                 </div>
                 <div class="content-bottom back mt-10">
@@ -123,6 +139,9 @@
                 		<!--<div id="worklist" class="content-bottom-list">作业列表</div>-->
                 		<a class="ation operation_raise2 back-img" href="javascript:;" id="worklist" title="作业列表"></a>
                 		<a class="ation operation_raise back-img" href="javascript:;" id="hands" title="举手"></a>
+                		<div id="prevpages" class="content-bottom-list">上一页</div>
+                		<div id="nextspages" class="content-bottom-list">下一页</div>
+                		<div id="clearFile" class="content-bottom-list">关闭文档</div>
                 	</div>
                 </div>
             </div>
@@ -158,24 +177,39 @@
 	<input id="roleCode" type="hidden" value="<?php echo $userinfo['roleCode']?>">
 	<input id="liveid" type="hidden" value="<?php echo $liveid?>">
 </body>
-<script type="text/javascript" src="static/js/jquery.min.js" ></script>
+<script type="text/javascript" src="/themes/static/js/browser.min.js" ></script>
+<script type="text/javascript" src="/themes/static/js/jquery.min.js" ></script>
+<script type="text/javascript" src="/themes/static/WhiteBoardSDK/NIM_Web_NIM_v6.4.0.js" ></script>
+<script type="text/javascript" src="/themes/static/WhiteBoardSDK/NIM_Web_WhiteBoard_v6.4.0.js" ></script>
+<script type="text/javascript" src="/themes/static/WhiteBoardSDK/DrawPlugin.js" ></script>
+<script type="text/javascript" src="/themes/static/js/md5.js" ></script>
+<script type="text/babel" src="/themes/static/js/ajax.js" ></script>
+<script type="text/javascript" src="/themes/static/layerSDK/layer.js" ></script>
+<script type="text/javascript" src="/themes/static/js/common.js?v=1.1" ></script>
+<!--<script type="text/javascript" src="static/js/jquery.min.js" ></script>
 <script type="text/javascript" src="static/WhiteBoardSDK/NIM_Web_NIM_v6.4.0.js" ></script>
 <script type="text/javascript" src="static/WhiteBoardSDK/NIM_Web_WhiteBoard_v6.4.0.js" ></script>
 <script type="text/javascript" src="static/WhiteBoardSDK/DrawPlugin.js" ></script>
 <script type="text/javascript" src="static/js/md5.js" ></script>
 <script type="text/javascript" src="static/js/ajax.js" ></script>
 <script type="text/javascript" src="static/layerSDK/layer.js" ></script>
-<script type="text/javascript" src="static/js/common.js" ></script>
-<script type="text/javascript">
+<script type="text/javascript" src="static/js/common.js" ></script>-->
+<script type="text/babel">
 //	"username=350111201201101097; roleCode=Student; Token=716b545a"
     $(function() {
     	var username=getCookie("username");
         var roomid = $('#roomid').val(); //房间号
         var userid = $('#user_id').val();//学生id
         var techerid=$('#tid').val();//教师id
-        var isRoleName=$('#roleName').val()=='教师'; //角色是否是教师
+        var isRoleName=false; //角色是否是教师
+        if($('#roleName').val()=='教师' || $('#roleName').val()=='助教'){
+        	isRoleName=true;
+        }
         var roleCode=$('#roleCode').val();
         var liveid=$('#liveid').val();
+        if(!username) {
+        	username=userid;
+        }
         var isBottom = true; //是否刷新到底部
         var times = '',timesS=''; //计时器
         var iswords=false;//禁言
@@ -187,6 +221,7 @@
         	$(".ation").hide();
         	$("#begin").hide();
         	$("#stop").hide();
+        	$("#copyValue").val("rtmp://streamsrv.xueerqin.net/hls/"+roomid+'t');
         }else{
         	$("#my-publisher-all").remove();
         	$("#publishBtn").hide();
@@ -194,10 +229,10 @@
         	$("#endclass").hide();
         	$("#begin").hide();
         	$("#stop").hide();
+        	$("#copyValue").val("rtmp://streamsrv.xueerqin.net/hls/"+userid);
         }
         fetch(); //初始化聊天列表
         fetchStuent(); //初始化学生直播窗口
-        $("#copyValue").val("rtmp://no3.ybinu.cn:1935/hls/"+userid);
         function fetch() {
             var checkboxs = $(".my-checkbox")[0].checked;
             var obj = {},myurl='chatContent';
@@ -213,7 +248,7 @@
                     roomid: roomid
                 }
             }
-            $.get(API + myurl, obj, function(res) {
+            $.get(API +'/api/'+ myurl, obj, function(res) {
                 typeof res == "string" && (res = JSON.parse(res));
                 var html = '';
                 res.data&&res.data.forEach(function(item) {
@@ -260,7 +295,7 @@
         //学生窗口
         var fetchStuentUrl='';
         function fetchStuent() {
-            $.get(API + "getstuadr", {
+            $.get(API + "/api/getstuadr", {
                 roomid: roomid
             }, function(res) {
                 typeof res == "string" && (res = JSON.parse(res));
@@ -279,11 +314,13 @@
 							  
 							});
 	                	}else{
-	                		changeSrc("rtmp://no3.ybinu.cn:1935/hls/"+res.url);
-	                		$("#my-publisher2-all").css("z-index","-100");
-	                		if(fetchStuentUrl!=''){stopPublish()}
-	                		$("#begin").hide();
-        					$("#stop").hide();
+	                		if($(".openFlash").css('display')=='none'){
+	                			changeSrc("rtmp://streamsrv.xueerqin.net/hls/"+res.url);
+		                		$("#my-publisher2-all").css("z-index","-100");
+		                		if(fetchStuentUrl!=''){stopPublish()}
+		                		$("#begin").hide();
+	        					$("#stop").hide();
+	                		}
 	                	}
 	                	fetchStuentUrl=res.url;
                 	}
@@ -292,7 +329,7 @@
                     fetchStuent();
                 }, 10000)
             })
-            $.get(API + "getuseronline", {
+            $.get(API + "/api/getuseronline", {
                 roomid: roomid
             }, function(res) {
                 typeof res == "string" && (res = JSON.parse(res));
@@ -317,9 +354,9 @@
                             +'</li>';
                 })
 
-//				$.get("http://lyg.goluckin.com/index.php/userstatus/useronline", {
-//              	roomid: roomid
-//          	})
+				$.get(API+"/userstatus/useronline", {
+                	roomid: roomid
+            	})
                 $("#subList-online").html(html);
                 if(isRoleName){
                 	$("#subList-online li").on("click", function(e) {
@@ -354,7 +391,7 @@
             send();
         })
         $("#hands").on("click",function(){
-        	$.get(API + "sendmsg", {
+        	$.get(API + "/api/sendmsg", {
         		roomid: roomid,
                 userid: userid,
                 content: '「举手」'
@@ -394,7 +431,7 @@
             if (checkboxs) {
                 obj.touser = userid;
             }
-            $.get(API + "sendmsg", obj, function(res) {
+            $.get(API + "/api/sendmsg", obj, function(res) {
                 typeof res == "string" && (res = JSON.parse(res));
                 if (res.status != 200) {
                     layer.msg(res.msg);
@@ -416,9 +453,9 @@
         		var htmls='<video id="my-video2" style="color:black;width:100%;height:100%" class="video-js" autoplay controls preload="auto" width="750" height="350" data-setup="{}">'
 							+'<source id="my-source" src='+src+' type="rtmp/flv">'
 						+'</video>'
-        		$(".content-left-top").html(htmls);
+        		$(".content-left-top2").html(htmls);
 	            //设置资源路径
-	            $(".content-left-top").attr("src", src);
+	            $(".content-left-top2").attr("src", src);
 	            videojs(id, {}, function () { //自动播放
 	                // Player (this) is initialized and ready.
 	                var myPlayer = videojs(id);
@@ -441,9 +478,17 @@
         	myPlayera.load();
         	$(".content-left-models").hide();
         })
+        $("#share_now").on("click",function(){
+        	$("#copyValue")[0].select();
+        	document.execCommand("Copy");
+        	layer.msg("复制地址成功，请到obs开始分享当前屏幕！");
+        	setTimeout(function(){
+        		changeStu(roomid+'t');
+        	},3000)
+        })
         //改变学生窗口播放源
         function changeStu(id){
-        	$.get(API + "setstuadr", {
+        	$.get(API + "/api/setstuadr", {
                 roomid: roomid,
                 stuid:id
             }, function(res) {
@@ -452,7 +497,7 @@
             })
         }
         function changeStuStatus(status,uid){
-        	$.get(API + "chataudit", {
+        	$.get(API + "/api/chataudit", {
                 userid: uid,
                 status:status,
                 roomid:roomid
@@ -469,7 +514,7 @@
         })
         //作业列表
         $("#worklist").on("click",function(){
-        	$.get(API + "teacher_homework_list", {
+        	$.get(API + "/api/teacher_homework_list", {
                 liveid: liveid
             }, function(res) {
                 typeof res == "string" && (res = JSON.parse(res));
@@ -495,9 +540,12 @@
         $("#endclass").on("click",function(){
         	onunload_handler();
         })
+        $(".count-list").on("click",function(){
+        	$(".count-list-c").eq($(this).index()).show().siblings(".count-list-c").hide();
+        })
         window.onunload = onunload_handler; 
 	    function onunload_handler(){
-	        $.get(API+"endClasses", {
+	        $.get(API+"/api/endClasses", {
 	            userId: userid,
 	            roleCode:roleCode,
 	            roomId:roomid,
@@ -512,10 +560,15 @@
 	   	}
 	    //白板模块
 	    if(!username) return alert("未登录");
-	    var nim=wb=drawPlugin='',appkey='1ee5a51b7d008254cd73b1d4369a9494';
+	    var nim='';
+	    var wb='';
+	    var drawPlugin='';
+	    var appkey='1ee5a51b7d008254cd73b1d4369a9494';
+	    var StoreWhiteBoard={};
+//	    var nim=wb=drawPlugin='',appkey='1ee5a51b7d008254cd73b1d4369a9494',StoreWhiteBoard={};
 	    var wbAPI='https://app.netease.im/api';
 	    //登录IM
-	    login(username,MD5('123456'));
+	    login(username.substring(username.length-10),MD5('123456'));
 	    
 	    function login(account, token){
 			NIM.use(WhiteBoard)
@@ -535,38 +588,60 @@
 		        },
 		        onconnect: function(event) {
 		          console.log(JSON.stringify(event)+"im连接成功....");
-		          init();
-		          return;
-		          $("#roombt").on("click",function(){
-		          	if($("#room").val()=='') {return alert("不能为空")}
-		          	ajax({
-		          		type:"POST",
-		          		url:wbAPI+"/chatroom/create",
-		          		dataType: "json",
-		          		data:{
-		          			creator: account,
-					        name: $("#room").val()
-		          		}
-		          	}).then(res=>{
-		          		let roomid=res.msg;
-		          		localStorage.roomid=roomid;
-		          		ajax({
-		          			type:"POST",
-			          		url:"https://app.netease.im/api/chatroom/getAddress",
-			          		dataType: "form",
-			          		data:{
-			          			uid: account,
-							    roomid: roomid
-			          		}
-		          		}).then(res=>{
-		          			localStorage.roomMsg=JSON.stringify(res.msg);
-		          			init();
-		          		})
-		          	})
-		          })
+		          initWB();
 		        }
 			})
 		}
+	    function joinChannelWb(roomId){
+	    	if (!wb) return alert('wb::没有实例化');
+	    	console.log(roomId,"房间号")
+	    	if(!roomId) return alert('wb::没有房间号');
+			wb.joinChannel({
+	        	channelName: roomId
+        	}).then(res=>{
+        		console.log(res,11)
+        	}).catch(err=>{
+        		console.log(err,22)
+//      		if(isTeacher==1) return;
+				if(!isRoleName) return layer.msg('加入房间失败');;
+        		wb.createChannel({
+		            channelName: roomId
+		        }).then(res=>{
+		        	console.log(res)
+		        }).catch(err=>{
+		        	console.log(err)
+		        })
+        	})
+	    }
+	    function initWB(){
+	    	wb = WhiteBoard.getInstance({
+				nim:nim,
+				debug:true
+			})
+	    	drawPlugin = new DrawPlugin(document.getElementById("wbord"), {
+			  UID: wb.getAccount(),
+			  nim: nim  // nim实例
+			})
+	    	
+	    	joinChannelWb(roomid); //加入白板房间
+	    	
+	    	drawPlugin.enableDraw(isRoleName); //是否可以操作白板
+	    	
+			drawPlugin.on('data', (obj) => {
+			  let { toAccount = 0, data } = obj
+			  wb.sendData({ toAccount, data })
+			})
+			
+			wb.on('data', (obj) => {
+			  drawPlugin.act({ account: obj.account, data: obj.data })
+			});
+			nim.on('notifyTransLog', function(data) {
+	            console.log('notifyTransLog', data);
+	            // data.state = WhiteBoardState.serializeFileStateMap['TRANSCOMPLETE'];
+	            // data.percent = 100;
+	            StoreWhiteBoard.data=data;
+	        });
+	    }
 	    function regiset(account,token){
 	    	ajax({
           		type:"POST",
@@ -577,15 +652,130 @@
 				},
           		data:{
           			username: account,
-				    nickname:'lyg'+account,
+				    nickname:'lyg'+account.substring(account.length-7),
 				    password: token
           		}
           	}).then(res=>{
-          		console.log(res,1)
+          		if(res.res==200){
+          			login(account,token);
+          		}
           	}).catch(err=>{
-          		console.log(res,2)
+          		alert("注册出错！");
           	})
 	    }
+	    $("#file_ppt").on("change",function(){
+	    	var fileInput=document.getElementById("file_ppt");
+	    	const param = {
+		      // 转码支持
+		      transcode: 'jpg',
+		      type: 'file',
+		      fileInput:fileInput,
+		      beginupload(data) {
+		        // - 如果开发者传入 fileInput, 在此回调之前不能修改 fileInput
+		        // - 在此回调之后可以取消图片上传, 此回调会接收一个参数 `upload`, 调用 `upload.abort();` 来取消文件上传
+		        const { fileInputName, transtype, docId } = data.options;
+		        console.log('beginupload', data.options);
+		        console.log('fileInputName type', fileInputName, transtype);
+		      },
+		      uploadprogress(data) {
+		        console.log('uploadprogress', data);
+		      },
+		      uploaddone(error, file) {
+		        console.log('uploaddone', error, file, docId);
+		      },
+		      done(a, b) {
+		      	alert("上传成功")
+		        console.log('send file done', a, b);
+		      }
+		    };
+		    nim.previewFile(param);
+	    })
+	    $("#getFliles").on("click",function(){
+	    	getFliles()
+	    })
+	    var setImageObj={},pageIndx=1;
+	    function getFliles(){
+	    	nim.getFileList({
+		      limit: 30,
+		      success: function(data) {
+		        console.log('getFileList success', data);
+		        var html = '<ul class="material">';
+                data.list.forEach(function(item,index) {
+                    html += '<li class="flex just-between">'
+				                +'<div>'+item.name+'</div>'
+				                +'<div>'
+					                +'<a href="javaScript:void(0)" data-index='+index+' class="material_btn material_btn2">使用</a>'
+					                +'<a href="javaScript:void(0)" data-index='+index+' class="material_btn material_delete">删除</a>'
+				                +'</div>'
+				            +'</li>'
+                })
+                html+='</ul>';
+                layer.open({
+				  title: '作业列表',
+					  area:['500px','auto'],
+					  btn:[],
+					  content: html
+				}); 
+				$(".material_btn2").on("click",function(){
+					let i=$(this).attr("data-index");
+					setImageObj=data.list[i];
+					pageIndx=1;
+					setImage();
+					layer.closeAll();
+				})
+				$(".material_delete").on("click",function(){
+					let i=$(this).attr("data-index");
+					nim.deleteFile({
+			            docId:data.list[i].docId,
+			            error: function(a, b) {
+			                console.error('deleteFile error', a, b);
+			            },
+			            success: function() {
+			                console.log('deleteFile success');
+			                getFliles();
+			            }
+			        });
+				})
+		      },
+		      error: function(error) {
+		        console.error('getFileList error', error);
+		      }
+		    });
+	    }
+	    function setImage(){
+	    	var item=setImageObj;
+	    	console.log('setImage', item);
+	        const name = item.name.replace(/\.\w+$/, '');
+	        const url = `${item.prefix}_${item.type}_${pageIndx}.jpg`;
+	        drawPlugin &&
+	            drawPlugin.image({
+	                url,
+	                docId: item.docId,
+	                pageCount: item.pageCount,
+	                currentPage: pageIndx
+	            });
+	        $("#prevpages,#nextspages,#clearFile").show();
+	        layer.msg("当前页数"+pageIndx+"\n\n"+"总共"+item.pageCount);
+	    }
+	    $("#prevpages").on("click",function(){
+	    	if(pageIndx<=1){
+	    		return layer.msg("已经第一页了")
+	    	}
+	    	pageIndx--;
+	    	setImage();
+	    	
+	    })
+	    $("#nextspages").on("click",function(){
+	    	if(pageIndx>=setImageObj.pageCount){
+	    		return layer.msg("已经最后一页了")
+	    	}
+	    	pageIndx++;
+	    	setImage();
+	    })
+	    $("#clearFile").on("click",function(){
+	    	drawPlugin && drawPlugin.clearImage();
+	    	$("#prevpages,#nextspages,#clearFile").hide();
+	    })
     })
 </script>
 <script type="text/javascript">
@@ -600,15 +790,15 @@
         var publishBtn = document.getElementById('publishBtn');
         var previewBtn = document.getElementById('previewBtn')
         var testInput = document.getElementsByClassName('u-input');
-        var ids='my-publisher2',mClass='.content-left-top';
+        var ids='my-publisher2',mClass='.content-left-top2';
         if(isRoleName){
         	ids='my-publisher';
-        	mClass='.content-center';
+        	mClass='.content-left-top1';
         }
         var myPublisher = new nePublisher(ids, {
             //viewOptions
-            videoWidth: 960,
-            videoHeight: 540,
+            videoWidth: $(mClass).width(),
+            videoHeight: $(mClass).height(),
             fps: 20,
             bitrate: 1500
         }, {
@@ -678,7 +868,7 @@
             document.getElementsByClassName('u-status')[0].innerHTML = '预览中';
         };
         var startPublish = function() {
-            var publishUrl = "rtmp://no3.ybinu.cn:1935/hls/"+(isRoleName==true ? roomid : userid);
+            var publishUrl = "rtmp://streamsrv.xueerqin.net/hls/"+(isRoleName==true ? roomid : userid);
             startPublishCall();
             myPublisher.setCamera(getCameraIndex());
             myPublisher.setMicroPhone(getMicroPhoneIndex());
