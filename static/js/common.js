@@ -1,4 +1,5 @@
-var API="http://lyg.goluckin.com/index.php/api/";
+//var API="http://lyg.goluckin.com/index.php/api/";
+var API="https://liveroom.xueerqin.net/index.php";
 (function () {
     //适配移动端rem
     var newRem = function () {
