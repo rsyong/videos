@@ -3,8 +3,9 @@
 
 <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>云上课堂</title>
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE10" > 
+    <link href="https://www.xueerqin.net/Images/logo.ico" rel="Shortcut Icon" type="text/css">
     <link rel="stylesheet" href="/themes/static/css/buttons.css" />
     <link rel="stylesheet" href="/themes/static/css/video-js.min.css" />
     <link rel="stylesheet" href="/themes/static/css/app.css" />
@@ -53,7 +54,7 @@
     <div class="main">
         <div class="flex just-between">
             <div class="gs-title">
-                <span class="gs-live-in">直播中</span>
+                <span class="gs-live-in">未直播</span>
                 <?=$userinfo['uid']?> 角色
                     <?=$userinfo['roleName']?>
             </div>
@@ -126,8 +127,8 @@
                 			<div id="page-num" class="content-bottom-list c-list-hide">0/0</div>
 	                		<div id="nextspages" class="content-bottom-list c-list-hide">下一页</div>
 	                		<div id="clearFile" class="content-bottom-list c-list-hide">关闭文档</div>
-	                		<div id="Revoke" class="content-bottom-list">撤销</div>
-	                		<div id="wb_clear" class="content-bottom-list">清空</div>
+	                		<div id="Revoke" class="content-bottom-list s-list-hide">撤销</div>
+	                		<div id="wb_clear" class="content-bottom-list s-list-hide">清空</div>
                 		</div>
                 	</div>
                 	<div style="height: calc(100% - 34px);" class="count-list-c share">
@@ -143,7 +144,7 @@
                 		<div id="stop" class="content-bottom-list">暂停</div>
                 		<div id="Offline" class="content-bottom-list">强制下线</div>
                 		<div id="endclass" class="content-bottom-list">结束课程</div>
-                		<div id="copy" class="content-bottom-list" onclick="startPublish()">复制地址</div>
+                		<div id="copy" class="content-bottom-list">复制地址</div>
                 		<!--<div id="worklist" class="content-bottom-list">作业列表</div>-->
                 		<a class="ation operation_raise2 back-img" href="javascript:;" id="worklist" title="作业列表"></a>
                 		<a class="ation operation_raise back-img" href="javascript:;" id="hands" title="举手"></a>
@@ -201,7 +202,6 @@
 <script type="text/javascript">
 //	"username=350111201201101097; roleCode=Student; Token=716b545a"
     $(function() {
-    	var username=getCookie("username");
         var roomid = $('#roomid').val(); //房间号
         var userid = $('#user_id').val();//学生id
         var techerid=$('#tid').val();//教师id
@@ -209,10 +209,12 @@
         var isRoleNameZ=$('#roleName').val()=='助教'; //角色是否是教师
         var roleCode=$('#roleCode').val();
         var liveid=$('#liveid').val();
-        if(!username) {
-        	username=userid;
+        var username=userid;
+        if(isRoleName || isRoleNameZ) {
+        	username=roomid;
         }
         var isBottom = true; //是否刷新到底部
+        var isBottomLength=0;
         var times = '',timesS=''; //计时器
         var iswords=false;//禁言
         var isKickout=false;//提出房间
@@ -232,6 +234,7 @@
         	$("#begin").hide();
         	$("#stop").hide();
         	$(".count-list-top").hide();
+        	$(".s-list-hide").hide();
         	$("#copyValue").val("rtmp://streamsrv.xueerqin.net/hls/"+userid);
         }
         fetch(); //初始化聊天列表
@@ -270,7 +273,7 @@
 							+'</li>'
                 })
                 $("#subList").html(html);
-                if(isRoleName){
+                if(isRoleName || isRoleNameZ){
                 	$(".cur-pointer").on("click",function(){
 	                	changeStu($(this).attr("data-id"))
 	                })
@@ -281,14 +284,21 @@
                     }, 400);
                     isBottom = false;
                 } else {
-                    var sLT = $(".stutent-list")[0].scrollTop;
-                    var sLSH = $(".stutent-list")[0].scrollHeight;
-                    var sLH = $(".stutent-list").height();
-                    if (sLT > sLSH - sLH) {
-                        $(".stutent-list").animate({
-                            scrollTop: sLSH
-                        }, 400);
-                    };
+                	var rl=res.data.length;
+                	if(rl>isBottomLength){
+                		isBottomLength=rl;
+                		$(".stutent-list").animate({
+	                        scrollTop: $(".stutent-list")[0].scrollHeight
+	                    }, 400);
+                	}
+//                  var sLT = $(".stutent-list")[0].scrollTop;
+//                  var sLSH = $(".stutent-list")[0].scrollHeight;
+//                  var sLH = $(".stutent-list").height();
+//                  if (sLT > sLSH - sLH) {
+//                      $(".stutent-list").animate({
+//                          scrollTop: sLSH
+//                      }, 400);
+//                  };
                 }
                 times = setTimeout(function() {
                     fetch();
@@ -304,25 +314,25 @@
                 typeof res == "string" && (res = JSON.parse(res));
                 if (res.url) {
                 	if(fetchStuentUrl!=res.url){
-                		if(res.url==userid){
+                		if(res.url==userid && !isRoleName){
 	                		layer.confirm('是否开始直播？', {
 							  	btn: ['确定','取消'] //按钮
 							}, function(){
 							  	$("#publishBtn").click();
 							  	layer.closeAll();
-							  	$("#begin").show();
-        						$("#stop").show();
+//							  	$("#begin").show();
+//      						$("#stop").show();
 							  	$("#my-publisher2-all").css("z-index","100")
 							}, function(){
-							  
+							  changeStu('123456');
 							});
 	                	}else{
 	                		if($(".openFlash").css('display')=='none'){
 	                			changeSrc("rtmp://streamsrv.xueerqin.net/hls/"+res.url);
 		                		$("#my-publisher2-all").css("z-index","-100");
 		                		if(fetchStuentUrl!=''){stopPublish()}
-		                		$("#begin").hide();
-	        					$("#stop").hide();
+//		                		$("#begin").hide();
+//	        					$("#stop").hide();
 	                		}
 	                	}
 	                	fetchStuentUrl=res.url;
@@ -345,6 +355,9 @@
                 		if(item.status.indexOf("2")>-1){
                 			location.reload()
                 		}
+                		if(item.status==''){
+                			iswords=false;
+                		}
                 	}
                 	html+='<li class="flex just-between align-center" data-id="'+item.uid+'">'
                                 +'<div class="flex1"><img src="https://lyg.goluckin.com/themes/v2/static/images/17yk.png" />'+item.name+'</div>'
@@ -352,7 +365,7 @@
                                 	+'<div class="flex">'
                                 		+'<div class="sn-btn" title="禁言" data-status="1">禁言</div>'
                                 		+'<div class="sn-btn" title="踢出" data-status="2">踢出</div>'
-                                		+'<div class="sn-btn" title="解除" data-status="3">解除</div>'
+                                		+'<div class="sn-btn" title="解除" data-status="3">解禁</div>'
                                 	+'</div>'
                                 +'</div>'
                             +'</li>';
@@ -465,8 +478,8 @@
             $(".content-left-top2").attr("src", src);
             videojs(id, {}, function () { //自动播放
             	this.play();
-            	this.pause();
-            	this.load();
+//          	this.pause();
+//          	this.load();
             });
 	    }
         //停止播放
@@ -607,7 +620,7 @@
         	}).catch(err=>{
         		console.log(err,22)
 //      		if(isTeacher==1) return;
-				if(!isRoleName) return layer.msg('加入房间失败');;
+				if(!isRoleName) return layer.msg('加入房间失败');
         		wb.createChannel({
 		            channelName: roomId
 		        }).then(res=>{
@@ -629,8 +642,10 @@
 	    	
 	    	joinChannelWb(roomid); //加入白板房间
 	    	
-	    	drawPlugin.enableDraw(isRoleName); //是否可以操作白板
-	    	
+	    	drawPlugin.enableDraw(isRoleName || isRoleNameZ); //是否可以操作白板
+	    	if(!isRoleName){
+	    		drawPlugin.changeRoleToAudience();
+	    	}
 			drawPlugin.on('data', (obj) => {
 			  let { toAccount = 0, data } = obj
 			  wb.sendData({ toAccount, data })
@@ -754,8 +769,10 @@
 	    function setImage(){
 	    	var item=setImageObj;
 	    	console.log('setImage', item);
-	        const name = item.name.replace(/\.\w+$/, '');
-	        const url = `${item.prefix}_${item.type}_${pageIndx}.jpg`;
+	        let name = item.name.replace(/\.\w+$/, '');
+	        let url = `${item.prefix}_${item.type}_${pageIndx}.jpg`;
+	        url=url.replace("http","https");
+	        console.log(url,66)
 	        drawPlugin &&
 	            drawPlugin.image({
 	                url,
@@ -764,7 +781,7 @@
 	                currentPage: pageIndx
 	            });
 	         $(".c-list-hide").css("display","block");
-	         $("#page-num").text(pageIndx+"/"+item.pageCount);
+	         $("#page-num").text(pageIndx+"/"+item.pageCount || 1);
 	    }
 	    $("#prevpages").on("click",function(){
 	    	if(pageIndx<=1){
@@ -906,7 +923,6 @@
                 testInput[i].disabled = true;
             }
             previewBtn.disabled = true;
-
         };
         var stopPublishCall = function() {
             console.log('推流结束');

@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="http://www.bootcss.com/p/buttons/css/buttons.css">
     <link href="http://gz.ybinu.cn/video5.18/css/video-js.css" rel="stylesheet">
     <link rel="stylesheet" href="css/app.css" />
-    <script src="http://gz.ybinu.cn/video5.18/js/video.min.js"></script>
+    <script type="text/javascript" src="static/js/video.min.js" ></script>
     <script src="http://gz.ybinu.cn/video5.18/js/videojs-ie8.min.js"></script>
     <style type="text/css">
         .m-input {
@@ -65,6 +65,7 @@
 	    <div class="m-input">
 	        <button class="button button-primary button-rounded testBtn" id="previewBtn" onclick="startPreview()">预览</button>
 	        <button class="button button-primary button-rounded testBtn" id="publishBtn" onclick="startPublish()">开始直播</button>
+	        <button id="close" onclick="stopPublish()">关闭</button>
 	        <span class="u-status"></span>
 	    </div>
 	    <div >
@@ -165,7 +166,7 @@
         };
         var stopPublish = function() {
             myPublisher.stopPublish();
-            stopPublishCall();
+            myPublisher.stopPreview();
         };
         var startPublishCall = function() {
             console.log('推流开始');
@@ -188,6 +189,7 @@
             }
             previewBtn.disabled = false;
         };
+        
     </script>
 </body>
 </html>
