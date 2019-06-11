@@ -82,7 +82,7 @@
 					<?php $isIE = strpos($_SERVER['HTTP_USER_AGENT'],"Triden"); if(!$isIE){?>
 					<embed width="300" height="70" class="openFlash" style="position:absolute;z-Index:9999;top:0;" type="application/x-shockwave-flash">
 					<?php } ?>
-					<div style="position: absolute;width: 100%;height: 100%;top: 0;left: 0;z-index: -10;" id="my-publisher2-all">
+					<div style="position: absolute;width: 100%;height: 100%;top: 0;left: 0;z-index: 0;" id="my-publisher2-all">
 						<div id="my-publisher2"></div>
 					</div>
                 </div>
@@ -140,8 +140,7 @@
                 <div class="content-bottom back mt-10">
                 	<div class="flex align-center content-bottom-center" style="height: 100%;padding: 0 1rem;">
                 		<div id="publishBtn" class="content-bottom-list" onclick="startPublish()">开始直播</div>
-                		<div id="begin" class="content-bottom-list">播放</div>
-                		<div id="stop" class="content-bottom-list">暂停</div>
+                		<!--<div id="begin" class="content-bottom-list">播放</div>-->
                 		<div id="Offline" class="content-bottom-list">强制下线</div>
                 		<div id="endclass" class="content-bottom-list">结束课程</div>
                 		<div id="copy" class="content-bottom-list">复制地址</div>
@@ -223,16 +222,14 @@
         	$("#copy").hide();
         	$("#worklist").hide();
         	$(".ation").hide();
-        	$("#begin").hide();
-        	$("#stop").hide();
+//      	$("#begin").hide();
         	$("#copyValue").val("rtmp://streamsrv.xueerqin.net/hls/"+roomid+'t');
         }else{
         	$("#my-publisher-all").remove();
         	$("#publishBtn").hide();
         	$("#Offline").hide();
         	$("#endclass").hide();
-        	$("#begin").hide();
-        	$("#stop").hide();
+//      	$("#begin").hide();
         	$(".count-list-top").hide();
         	$(".s-list-hide").hide();
         	$("#copyValue").val("rtmp://streamsrv.xueerqin.net/hls/"+userid);
@@ -318,6 +315,8 @@
 	                		layer.confirm('是否开始直播？', {
 							  	btn: ['确定','取消'] //按钮
 							}, function(){
+								$("#publishBtn").show();
+								changeSrc("rtmp://streamsrv.xueerqin.net/hls/"+res.url,true);
 							  	$("#publishBtn").click();
 							  	layer.closeAll();
 //							  	$("#begin").show();
@@ -328,9 +327,11 @@
 							});
 	                	}else{
 	                		if($(".openFlash").css('display')=='none'){
-	                			changeSrc("rtmp://streamsrv.xueerqin.net/hls/"+res.url);
+	                			changeSrc("rtmp://streamsrv.xueerqin.net/hls/"+res.url,false);
 		                		$("#my-publisher2-all").css("z-index","-100");
-		                		if(fetchStuentUrl!=''){stopPublish()}
+		                		if(!isRoleName){
+		                			$("#publishBtn").hide();
+		                		}
 //		                		$("#begin").hide();
 //	        					$("#stop").hide();
 	                		}
@@ -463,14 +464,15 @@
             })
         }
 		//改变路径
-        function changeSrc(src) {
+        function changeSrc(src,isGo) {
         	var videoPlayer = $("#my-video2").get(0);
     		if (typeof (videoPlayer) != "undefined") {
     			var myPlayer = videojs('my-video2');
     			myPlayer.dispose();
     		}
+    		if(isGo) return;
     		var id="my-video2";
-    		var htmls='<video id="my-video2" style="color:black;width:100%;height:100%" class="video-js" controls preload="auto" width="750" height="350">'
+    		var htmls='<video id="my-video2" style="color:black;width:100%;height:100%;position: relative;z-index: 1;" class="video-js" controls preload="auto" width="750" height="350">'
 						+'<source id="my-source" src='+src+' type="rtmp/flv">'
 					+'</video>'
     		$(".content-left-top2").html(htmls);
@@ -482,17 +484,9 @@
 //          	this.load();
             });
 	    }
-        //停止播放
-        $("#stop").on("click",function(){
-        	var myPlayera = videojs("my-video2");
-        	myPlayera.pause();
-        	$(".content-left-models").show();
-        })
         //开始播放
         $("#begin").on("click",function(){
-        	var myPlayera = videojs("my-video2");
-        	myPlayera.load();
-        	$(".content-left-models").hide();
+        	startPublish()
         })
         $("#share_now").on("click",function(){
         	$("#copyValue")[0].select();
@@ -604,7 +598,7 @@
 		        	}
 		        },
 		        onconnect: function(event) {
-		          console.log(JSON.stringify(event)+"im连接成功....");
+		          console.log(JSON.stringify(event)+"im连接成功...."+account);
 		          initWB();
 		        }
 			})
@@ -616,7 +610,6 @@
 			wb.joinChannel({
 	        	channelName: roomId
         	}).then(res=>{
-        		console.log(res,11)
         	}).catch(err=>{
         		console.log(err,22)
 //      		if(isTeacher==1) return;
@@ -643,9 +636,7 @@
 	    	joinChannelWb(roomid); //加入白板房间
 	    	
 	    	drawPlugin.enableDraw(isRoleName || isRoleNameZ); //是否可以操作白板
-	    	if(!isRoleName){
-	    		drawPlugin.changeRoleToAudience();
-	    	}
+	    	
 			drawPlugin.on('data', (obj) => {
 			  let { toAccount = 0, data } = obj
 			  wb.sendData({ toAccount, data })
@@ -654,10 +645,21 @@
 			wb.on('data', (obj) => {
 			  drawPlugin.act({ account: obj.account, data: obj.data })
 			});
+			wb.on('joinChannel', function(obj) {
+	            if(!isRoleName){
+		    		console.log("请求历史数据",roomid.substring(roomid.length-10))
+		    		drawPlugin.syncRequest(roomid.substring(roomid.length-10));
+		    	}else{
+		    		console.log("请求历史数据",username.substring(username.length-10))
+		    		drawPlugin.syncRequest(username.substring(username.length-10));
+		    	}
+	        })
 			nim.on('notifyTransLog', function(data) {
 	            console.log('notifyTransLog', data);
 	            // data.state = WhiteBoardState.serializeFileStateMap['TRANSCOMPLETE'];
 	            // data.percent = 100;
+	            layer.closeAll();
+		      	layer.msg("上传成功");
 	            StoreWhiteBoard.data=data;
 	        });
 	    }
@@ -707,8 +709,6 @@
 		        console.log('uploaddone', error, file, docId);
 		      },
 		      done(a, b) {
-		      	layer.closeAll();
-		      	layer.msg("上传成功")
 		        console.log('send file done', a, b);
 		      }
 		    };
@@ -742,7 +742,7 @@
 				}); 
 				$(".material_btn2").on("click",function(){
 					let i=$(this).attr("data-index");
-					setImageObj=data.list[i];
+					setImageObj=data.list[Number(i)];
 					pageIndx=1;
 					setImage();
 					layer.closeAll();
@@ -781,7 +781,7 @@
 	                currentPage: pageIndx
 	            });
 	         $(".c-list-hide").css("display","block");
-	         $("#page-num").text(pageIndx+"/"+item.pageCount || 1);
+	         $("#page-num").text(pageIndx+"/"+(item.pageCount || 1));
 	    }
 	    $("#prevpages").on("click",function(){
 	    	if(pageIndx<=1){
@@ -883,12 +883,28 @@
         var getCameraIndex = function() {
             var cameraSelect = document.getElementById("cameraSelect");
             var cameraIndex = cameraSelect.selectedIndex;
-            return cameraSelect.options[cameraIndex].value;
+            if(cameraIndex || cameraIndex==0){
+            	if(cameraSelect.options[cameraIndex].value){
+            		return cameraSelect.options[cameraIndex].value;
+            	}else{
+            		return false;
+            	}
+            }else{
+            	return false;
+            }
         };
         var getMicroPhoneIndex = function() {
             var microPhoneSelect = document.getElementById("microPhoneSelect");
             var microPhoneIndex = microPhoneSelect.selectedIndex;
-            return microPhoneSelect.options[microPhoneIndex].value;
+            if(microPhoneIndex || microPhoneIndex==0){
+            	if(microPhoneSelect.options[microPhoneIndex].value){
+            		return microPhoneSelect.options[microPhoneIndex].value;
+            	}else{
+            		return false;
+            	}
+            }else{
+            	return false;
+            }
         };
         var getQualityOption = function() {
             var qualitySelect = document.getElementById("qualitySelect");
@@ -902,6 +918,12 @@
         var startPublish = function() {
             var publishUrl = "rtmp://streamsrv.xueerqin.net/hls/"+(isRoleName==true ? roomid : userid);
             startPublishCall();
+            if(!getCameraIndex()){
+            	return alert("无法连接摄像头，请插入合适摄像头或者开启falsh权限");
+            }
+            if(!getMicroPhoneIndex()){
+            	return alert("无法连接麦克风，请插入合适麦克风或者开启falsh权限");
+            }
             myPublisher.setCamera(getCameraIndex());
             myPublisher.setMicroPhone(getMicroPhoneIndex());
             myPublisher.startPublish(publishUrl, getQualityOption(),function(code, desc) {
