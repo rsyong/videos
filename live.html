@@ -76,6 +76,9 @@
                     </div>
                 </div>
                 <div class="content-left-top content-left-top2 back mt-10">
+                	<div class="sudent-video">
+                		
+                	</div>
                     <!--<video id="my-video2" style="color:black;width:100%;height:100%" class="video-js" controls preload="auto" width="750" height="350">
 						<source id="my-source" src="rtmp://v9a6d110b.live.126.net/live/382830b04fe7421198f7902b979c327f" type="rtmp/flv">
 					</video>-->
@@ -475,9 +478,9 @@
     		var htmls='<video id="my-video2" style="color:black;width:100%;height:100%;position: relative;z-index: 1;" class="video-js" controls preload="auto" width="750" height="350">'
 						+'<source id="my-source" src='+src+' type="rtmp/flv">'
 					+'</video>'
-    		$(".content-left-top2").html(htmls);
+    		$(".sudent-video").html(htmls);
             //设置资源路径
-            $(".content-left-top2").attr("src", src);
+            $(".sudent-video").attr("src", src);
             videojs(id, {}, function () { //自动播放
             	this.play();
 //          	this.pause();
