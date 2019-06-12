@@ -76,7 +76,7 @@
                     </div>
                 </div>
                 <div class="content-left-top content-left-top2 back mt-10">
-                	<div class="sudent-video">
+                	<div class="sudent-video" style="height: 100%;">
                 		
                 	</div>
                     <!--<video id="my-video2" style="color:black;width:100%;height:100%" class="video-js" controls preload="auto" width="750" height="350">
@@ -120,7 +120,7 @@
                 			<input  id="file_ppt" style="position: absolute;top: 0;left: 0;width: 100%;height: 20px;opacity: 0;" type="file" accept=".pdf,.ppt,.pptx"/>
                 		</div>
                 		<div class="count-list-top">
-                			<button class="count-list" id="getFliles">拉取列表</button>
+                			<button class="count-list" id="getFliles">课件列表</button>
                 		</div>
                 	</div>
                 	<div style="height: calc(100% - 34px);" class="count-list-c">
@@ -146,9 +146,9 @@
                 		<!--<div id="begin" class="content-bottom-list">播放</div>-->
                 		<div id="Offline" class="content-bottom-list">强制下线</div>
                 		<div id="endclass" class="content-bottom-list">结束课程</div>
-                		<div id="copy" class="content-bottom-list">复制地址</div>
+                		<!--<div id="copy" class="content-bottom-list">复制地址</div>-->
                 		<!--<div id="worklist" class="content-bottom-list">作业列表</div>-->
-                		<a class="ation operation_raise2 back-img" href="javascript:;" id="worklist" title="作业列表"></a>
+                		<!--<a class="ation operation_raise2 back-img" href="javascript:;" id="worklist" title="作业列表"></a>-->
                 		<a class="ation operation_raise back-img" href="javascript:;" id="hands" title="举手"></a>
                 	</div>
                 </div>
@@ -217,7 +217,7 @@
         }
         var isBottom = true; //是否刷新到底部
         var isBottomLength=0;
-        var times = '',timesS=''; //计时器
+        var times = ''; //计时器
         var iswords=false;//禁言
         var isKickout=false;//提出房间
         if(isRoleName){
@@ -329,7 +329,7 @@
 							  changeStu('123456');
 							});
 	                	}else{
-	                		if($(".openFlash").css('display')=='none'){
+	                		if($(".openFlash").css('display')=='none' || isRoleName){
 	                			changeSrc("rtmp://streamsrv.xueerqin.net/hls/"+res.url,false);
 		                		$("#my-publisher2-all").css("z-index","-100");
 		                		if(!isRoleName){
@@ -342,7 +342,7 @@
 	                	fetchStuentUrl=res.url;
                 	}
                 }
-                timesS=setTimeout(function() {
+                setTimeout(function() {
                     fetchStuent();
                 }, 10000)
             })
@@ -377,6 +377,8 @@
 
 				$.get(API+"/userstatus/useronline", {
                 	roomid: roomid
+            	},function(){
+            		
             	})
                 $("#subList-online").html(html);
                 if(isRoleName || isRoleNameZ){
@@ -613,6 +615,9 @@
 			wb.joinChannel({
 	        	channelName: roomId
         	}).then(res=>{
+        		console.log(res,11)
+        		layer.msg('加入房间成功！');
+        		drawPlugin.syncBegin();
         	}).catch(err=>{
         		console.log(err,22)
 //      		if(isTeacher==1) return;
@@ -621,6 +626,7 @@
 		            channelName: roomId
 		        }).then(res=>{
 		        	console.log(res)
+		        	joinChannelWb(roomId);
 		        }).catch(err=>{
 		        	console.log(err)
 		        })
@@ -652,9 +658,6 @@
 	            if(!isRoleName){
 		    		console.log("请求历史数据",roomid.substring(roomid.length-10))
 		    		drawPlugin.syncRequest(roomid.substring(roomid.length-10));
-		    	}else{
-		    		console.log("请求历史数据",username.substring(username.length-10))
-		    		drawPlugin.syncRequest(username.substring(username.length-10));
 		    	}
 	        })
 			nim.on('notifyTransLog', function(data) {
@@ -738,7 +741,7 @@
                 })
                 html+='</ul>';
                 layer.open({
-				  title: '作业列表',
+				  title: '课件列表',
 					  area:['500px','auto'],
 					  btn:[],
 					  content: html
@@ -817,7 +820,7 @@
 	var isRoleName=$('#roleName').val()=='教师'; //角色是否是教师
 	var userid = $('#user_id').val();//学生id
 	var roomid = $('#roomid').val(); //房间号
-	
+	var isFang=false;
         var cameraList,
             microPhoneList,
             cameraOptions = '',
@@ -858,7 +861,8 @@
             
         }, function(code, desc) {
             console.log(code, desc);
-            
+            isFang=true;
+            alert(desc)
         });
         var qualityList = [
             {
@@ -886,28 +890,12 @@
         var getCameraIndex = function() {
             var cameraSelect = document.getElementById("cameraSelect");
             var cameraIndex = cameraSelect.selectedIndex;
-            if(cameraIndex || cameraIndex==0){
-            	if(cameraSelect.options[cameraIndex].value){
-            		return cameraSelect.options[cameraIndex].value;
-            	}else{
-            		return false;
-            	}
-            }else{
-            	return false;
-            }
+            return cameraSelect.options[cameraIndex].value;
         };
         var getMicroPhoneIndex = function() {
             var microPhoneSelect = document.getElementById("microPhoneSelect");
             var microPhoneIndex = microPhoneSelect.selectedIndex;
-            if(microPhoneIndex || microPhoneIndex==0){
-            	if(microPhoneSelect.options[microPhoneIndex].value){
-            		return microPhoneSelect.options[microPhoneIndex].value;
-            	}else{
-            		return false;
-            	}
-            }else{
-            	return false;
-            }
+            return microPhoneSelect.options[microPhoneIndex].value;
         };
         var getQualityOption = function() {
             var qualitySelect = document.getElementById("qualitySelect");
@@ -919,14 +907,9 @@
             document.getElementsByClassName('u-status')[0].innerHTML = '预览中';
         };
         var startPublish = function() {
+        	if(isFang) return alert("获取摄像头失败！");
             var publishUrl = "rtmp://streamsrv.xueerqin.net/hls/"+(isRoleName==true ? roomid : userid);
             startPublishCall();
-            if(!getCameraIndex()){
-            	return alert("无法连接摄像头，请插入合适摄像头或者开启falsh权限");
-            }
-            if(!getMicroPhoneIndex()){
-            	return alert("无法连接麦克风，请插入合适麦克风或者开启falsh权限");
-            }
             myPublisher.setCamera(getCameraIndex());
             myPublisher.setMicroPhone(getMicroPhoneIndex());
             myPublisher.startPublish(publishUrl, getQualityOption(),function(code, desc) {
