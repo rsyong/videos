@@ -54,7 +54,7 @@
     <div class="main">
         <div class="flex just-between">
             <div class="gs-title">
-                <span class="gs-live-in">未直播</span>
+                <!--<span class="gs-live-in">未直播</span>-->
                 <?=$userinfo['uid']?> 角色
                     <?=$userinfo['roleName']?>
             </div>
@@ -149,9 +149,10 @@
                 		<!--<div id="copy" class="content-bottom-list">复制地址</div>-->
                 		<!--<div id="worklist" class="content-bottom-list">作业列表</div>-->
                 		<!--<a class="ation operation_raise2 back-img" href="javascript:;" id="worklist" title="作业列表"></a>-->
-                		<div id="endhudong" style="display: none;" class="content-bottom-list">取消互动</div>
-                		<div id="hudong" class="content-bottom-list">互动</div>
+                		<!--<div id="endhudong" style="display: none;" class="content-bottom-list">取消互动</div>-->
+                		<!--<div id="hudong" class="content-bottom-list">互动</div>-->
                 		<a class="ation operation_raise back-img" href="javascript:;" id="hands" title="举手"></a>
+                		<a class="content-bottom-list admins" href="http://lyg.goluckin.com/index.php/admin/login?token=<?php echo $userinfo['token']?>&roleCode=Teacher" target="_blank"  title="后台管理系统">后台管理系统</a>
                 	</div>
                 </div>
             </div>
@@ -244,6 +245,7 @@
 //      	$("#begin").hide();
         	$(".count-list-top").hide();
         	$(".s-list-hide").hide();
+        	$(".admins").hide();
         	$("#copyValue").val("rtmp://streamsrv.xueerqin.net/hls/"+userid);
         }
         fetch(); //初始化聊天列表
@@ -331,6 +333,9 @@
 								changeSrc("rtmp://streamsrv.xueerqin.net/hls/"+res.url,true);
 							  	$("#publishBtn").click();
 							  	layer.closeAll();
+							  	drawPlugin.enableDraw(true);
+							  	drawPlugin.setColor("#000");
+							  	$("#Revoke").show();
 //							  	$("#begin").show();
 //      						$("#stop").show();
 							  	$("#my-publisher2-all").css("z-index","100")
@@ -343,7 +348,9 @@
 		                		$("#my-publisher2-all").css("z-index","-100");
 		                		if(!isRoleName && !isRoleNameZ){
 		                			$("#publishBtn").hide();
+		                			$("#Revoke").hide();
 		                		}
+		                		drawPlugin.enableDraw(false);
 //		                		$("#begin").hide();
 //	        					$("#stop").hide();
 	                		}
@@ -399,6 +406,11 @@
                 		e.stopPropagation();
 	                    changeStuStatus($(this).attr("data-status"),$(this).closest(".align-center").attr("data-id"))
 	                })
+                	$.get(API+"/api/intvaltoken", {
+	                	
+	            	},function(){
+	            		
+	            	})
                 }else{
                 	$(".sn-btn").hide();
                 }
@@ -582,6 +594,11 @@
 	        	typeof res == "string" && (res = JSON.parse(res));
 	        	layer.msg("结束成功");
 	        })
+	        $.get(API+"/api/clearchat", {
+	            roomId:roomid,
+	        }).then(function(res){
+	        	
+	        })
 	   	}
 	    var EventUtil = { 
 			addHandler: function (element, type, handler) { 
@@ -695,7 +712,7 @@
         	}).catch(err=>{
         		console.log(err,22)
 //      		if(isTeacher==1) return;
-				if(!isRoleName) return layer.msg('加入房间失败');
+				if(!isRoleName) return layer.msg('教师尚未进入房间');
         		wb.createChannel({
 		            channelName: roomId
 		        }).then(res=>{
@@ -718,7 +735,7 @@
 	    	
 	    	joinChannelWb(roomid); //加入白板房间
 	    	
-	    	drawPlugin.enableDraw(isRoleName || isRoleNameZ); //是否可以操作白板
+	    	drawPlugin.enableDraw(isRoleName); //是否可以操作白板
 	    	
 			drawPlugin.on('data', (obj) => {
 			  let { toAccount = 0, data } = obj
@@ -903,9 +920,10 @@
 	    		}
 	    	})
 	    })
+	    
     })
 </script>
-<script type="text/javascript">
+<script>
 	var isRoleName=$('#roleName').val()=='教师'; //角色是否是教师
 	var isRoleNameZ=$('#roleName').val()=='助教'; //角色是否是教师
 	var userid = $('#user_id').val();//学生id
@@ -934,11 +952,17 @@
             previewWindowWidth: $(mClass).width(),
             previewWindowHeight: $(mClass).height(),
             wmode: 'transparent',
-            quality: 'high',
+            quality: 'medium',
             allowScriptAccess: 'always'
         }, function() {
             cameraList = this.getCameraList();
             microPhoneList = this.getMicroPhoneList();
+            if(cameraList.length==0){
+            	isFang=true;
+            }
+            if(cameraList.length > 0 && cameraList[0]==" "){
+            	isFang=true;
+            }
             console.log(cameraList, microPhoneList);
             for (var i = cameraList.length - 1; i >= 0; i--) {
                 cameraOptions = '<option value="' + i + '">' + cameraList[i] + '</option>' + cameraOptions;
@@ -1041,5 +1065,5 @@
             }
             previewBtn.disabled = false;
         };
-    </script>
+</script>
 </html>

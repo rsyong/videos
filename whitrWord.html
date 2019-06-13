@@ -1,183 +1,31 @@
-<!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="UTF-8">
 		<title></title>
-		<style type="text/css">
-			.room{
-				display: none;
-			}
-		</style>
 	</head>
 	<body>
-		<div>
-			<h3>注册</h3>
-			<input id="username" placeholder="账号" />
-			<input id="nickname" placeholder="用户名" />
-			<input id="password" placeholder="密码" type="password" />
-			<button id="regiset">注册</button>
-		</div>
-		<div class="room">
-			<h3>创建房间</h3>
-			<input placeholder="房间名称" id="room" />
-			<button id="roombt">创建房间</button>
-		</div>
-		<div>
-			<h3>登录</h3>
-			<input class="username" placeholder="账号" />
-			<input class="password" placeholder="密码" type="password" />
-			<button id="login">登录</button>
-		</div>
-		<div id="wbord" style="height: 500px;width: 500px;border: 1px solid #000;"></div>
-	</body>
-	<script type="text/javascript" src="static/js/jquery.min.js" ></script>
-	<script type="text/javascript" src="static/WhiteBoardSDK/NIM_Web_NIM_v6.4.0.js" ></script>
-	<script type="text/javascript" src="static/WhiteBoardSDK/NIM_Web_WhiteBoard_v6.4.0.js" ></script>
-	<script type="text/javascript" src="static/WhiteBoardSDK/DrawPlugin.js" ></script>
-	<script type="text/javascript" src="static/js/md5.js" ></script>
-	<script type="text/javascript" src="static/js/ajax.js" ></script>
-	<script type="text/javascript">
-		function login(account, token){
-			NIM.use(WhiteBoard)
-			window.nim = window.NIM.getInstance({
-				debug: false,
-		        // debug: true && { api: 'info', style: 'font-size:12px;color:blue;background-color:rgba(0,0,0,0.1)' },
-		        appKey: "1ee5a51b7d008254cd73b1d4369a9494",
-		        account:account,
-		        token:token,
-		        db: false,
-		        syncSessionUnread: true,
-		        syncRobots: true,
-		        autoMarkRead: true, // 默认为true
-		        onconnect: function(event) {
-		          console.log(JSON.stringify(event)+"im连接成功....");
-		          $(".room").show();
-		          init(1);
-		          $("#roombt").on("click",function(){
-		          	if($("#room").val()=='') {return alert("不能为空")}
-		          	ajax({
-		          		type:"POST",
-		          		url:"https://app.netease.im/api/chatroom/create",
-		          		dataType: "json",
-		          		data:{
-		          			creator: account,
-					        name: $("#room").val()
-		          		}
-		          	}).then(res=>{
-		          		let roomid=res.msg;
-		          		localStorage.roomid=roomid;
-		          		ajax({
-		          			type:"POST",
-			          		url:"https://app.netease.im/api/chatroom/getAddress",
-			          		dataType: "form",
-			          		data:{
-			          			uid: account,
-							    roomid: roomid
-			          		}
-		          		}).then(res=>{
-		          			localStorage.roomMsg=JSON.stringify(res.msg);
-		          			init(2);
-		          		})
-		          	})
-		          })
-		        }
-			})
-		}
-		
-		function init(isTeacher){
-			if(isTeacher==2){
-				if(!localStorage.roomMsg) return alert('请先加入房间');
-				var roomMsg=JSON.parse(localStorage.roomMsg);
-				if(typeof roomMsg.ext=="string"){
-					roomMsg.ext=JSON.parse(roomMsg.ext)
-				}
-				console.log(roomMsg) //108083456
-			}
-			$("#room").val(localStorage.roomid);
-			
-			window.wb = WhiteBoard.getInstance({
-				nim:window.nim,
-				debug:true
-			})
-			window.drawPlugin = new DrawPlugin(document.getElementById("wbord"), {
-			  UID: window.wb.getAccount(),
-			  nim: window.nim  // nim实例
-			})
-			joinChannelWb(localStorage.roomid,isTeacher)
-			drawPlugin.enableDraw(true)
-			drawPlugin.on('data', (obj) => {
-			  let { toAccount = 0, data } = obj
-			  wb.sendData({ toAccount, data })
-			})
-			wb.on('data', (obj) => {
-			  drawPlugin.act({ account: obj.account, data: obj.data })
-			});
-		}
-		
-		function joinChannelWb(roomId, isTeacher){
-			if (!wb) return alert('wb::没有实例化');
-			var info={
-		      channelName: roomId,
-		      sessionConfig: {
-		        color: '#000'
-		      }
-			}
-			wb.joinChannel({
-	        	channelName: roomId
-        	}).then(res=>{
-        		console.log(res,11)
-        	}).catch(err=>{
-        		console.log(err,22)
-//      		if(isTeacher==1) return;
-        		wb.createChannel({
-		            channelName: roomId
-		        }).then(res=>{
-		        	console.log(res)
-		        }).catch(err=>{
-		        	console.log(err)
-		        })
-        	})
-		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		$("#login").on("click",function(){
-			var username=$(".username").val();
-			var pad=$(".password").val();
-			if(username=='' || pad==''){
-				return alert("用户名或密码不能为空！")
-			}
-			login(username,MD5(pad));
-		})
-		
-		
-		$("#regiset").on("click",function(){
-			$.ajax({
-				type:"POST",
-				url:"https://app.netease.im/api/createDemoUser",
-				async:true,
-				dataType: "form",
-				headers:{
-					appkey:'1ee5a51b7d008254cd73b1d4369a9494'
+		<script type="text/javascript" src="static/js/jquery.min.js" ></script>
+		<script type="text/javascript" src="static/WhiteBoardSDK/NIM_Web_Chatroom_v6.4.0.js" ></script>
+		<script type="text/javascript" src="static/js/md5.js" ></script>
+		<script type="text/javascript" src="static/js/common.js" ></script>
+		<script>
+			var roomid='f662d2a3e6574e0c8323f745414eb211';
+			var chatroom=Chatroom.getInstance({
+				appKey:'1ee5a51b7d008254cd73b1d4369a9494',
+				account:'45414eb211',
+				token:MD5('123456'),
+				chatroomId:roomid,
+				chatroomAddresses:[API +'/api/chatContent?roomid='+roomid],
+				onconnect:function(e){
+					console.log(e,111)
 				},
-				data: {
-			      	username: $("#username").val(),
-				    nickname: $("#nickname").val(),
-				    password: MD5($("#password").val())
-			     }
-			});
-		})
-	</script>
+				onerror:function(e){
+					console.warn(e,22)
+				},
+				ondisconnect:function(e){
+					console.warn(e,44)
+				}
+			})
+			console.log(chatroom,33)
+		</script>
+	</body>
 </html>
