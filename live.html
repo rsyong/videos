@@ -333,8 +333,8 @@
 								changeSrc("rtmp://streamsrv.xueerqin.net/hls/"+res.url,true);
 							  	$("#publishBtn").click();
 							  	layer.closeAll();
-							  	drawPlugin.enableDraw(true);
-							  	drawPlugin.setColor("#000");
+							  	drawPlugin&&drawPlugin.enableDraw(true);
+							  	drawPlugin&&drawPlugin.setColor("#000");
 							  	$("#Revoke").show();
 //							  	$("#begin").show();
 //      						$("#stop").show();
@@ -349,8 +349,8 @@
 		                		if(!isRoleName && !isRoleNameZ){
 		                			$("#publishBtn").hide();
 		                			$("#Revoke").hide();
+		                			drawPlugin&&drawPlugin.enableDraw(false);
 		                		}
-		                		drawPlugin.enableDraw(false);
 //		                		$("#begin").hide();
 //	        					$("#stop").hide();
 	                		}
@@ -652,6 +652,13 @@
 		        	if(event.code=="302"){
 		        		regiset(account,token);
 		        	}
+		        	if(event.code=="417"){
+		        		alert("你已在其他端登录！")
+		        	}
+		        },
+		        onwillreconnect:function(){
+		        	layer.msg("正在重连~")
+		        	joinChannelWb(roomid);
 		        },
 		        onconnect: function(event) {
 		          console.log(JSON.stringify(event)+"im连接成功...."+account);
@@ -784,9 +791,7 @@
 	    }
 	    $("#file_ppt").on("change",function(e){
 	    	if($(this).val()=='') return;
-	    	var index = layer.load(1, {
-			  shade: [0.1,'#fff'] //0.1透明度的白色背景
-			});
+	    	var index = layer.load(0, {shade: false});
 	    	var fileInput=document.getElementById("file_ppt");
 	    	const param = {
 		      // 转码支持
