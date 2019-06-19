@@ -1,153 +1,435 @@
 <html>
+
 	<head>
-		<meta charset="UTF-8"/>
+		<meta charset="UTF-8" />
 		<title></title>
+		<style type="text/css">
+			html {
+				font-size: 75%;
+			}
+			
+			* {
+				padding: 0;
+				margin: 0;
+			}
+			
+			body {
+				padding: 5px;
+			}
+			
+			.title {
+				margin: 10px 0;
+				text-align: center;
+			}
+			
+			.text-right {
+				text-align: right;
+			}
+			
+			video {
+				width: 100%;
+				max-width: 300px;
+				max-height: 300px;
+			}
+			
+			.im-log-box {
+				display: inline-block;
+				width: 100%;
+				height: 200px;
+				border: 1px solid #999;
+				margin: 5px;
+				overflow-y: auto;
+			}
+			
+			.im-log-box li {
+				margin: 2px 5px;
+				font-size: 14px;
+				color: #666;
+			}
+			
+			#video_wrap {
+				height: 300px;
+			}
+			
+			#video_wrap video {
+				margin: 0 5px;
+			}
+		</style>
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 	</head>
+
 	<body>
-		<!--<div id="board" style="border: 1px solid #000;width: 500px;height: 500px;position: relative;"></div>-->
-		<button onclick="startRTC()">开始直播</button> <input type="checkbox" value="是否主播" class="check_anchor" />是否主播
-		<div id="remote-video-wrap">
-
-        </div>
-        <div id="remote-video-wrap2">
-
-        </div>
+		<div>
+			<input placeholder="sdkappid" id="sdkappid" />sdkappid
+		</div>
+		<button onclick="BoraDObj.jojnBoard()">加入白板</button> <input type="checkbox" value="是否主播" class="check_anchor" />是否主播
+		<button onclick="BoraDObj.startRTC()">摄像头推流</button>
+		<button onclick="BoraDObj.stopPush()">停止推流</button>
+		<div id="board" style="border: 1px solid #000;width: 500px;height: 500px;position: relative;display: none;"></div>
+		<div id="video_wrap"></div>
+		<div>
+			<input id="urls" placeholder="请输入推流地址" />
+			<button id="urls_btn">确定加入</button>
+		</div>
+		<div id="id_test_video" style="width:480px; height:320px;"></div>
 	</body>
 	<!-- COS SDK -->
 	<script src="https://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
-	<script src="https://cdn.bootcss.com/axios/0.19.0-beta.1/axios.js"></script>
+	<script src="https://sqimg.qq.com/expert_qq/edu/axios/axios.min.js"></script>
+	<script src="https://sqimg.qq.com/expert_qq/webim/1.7.1/webim.min.js"></script>
 	<script src="https://sqimg.qq.com/expert_qq/cos/5.0.5/cos.mini.js"></script>
 	<!-- 白板SDK -->
-	<script src="https://sqimg.qq.com/expert_qq/edu/2.5.0/board_sdk.mini.js"></script>
+	<script src="https://sqimg.qq.com/expert_qq/tedu/board/2.1.0/TEduBoard.min.js"></script>
 	<script src="https://sqimg.qq.com/expert_qq/webrtc/3.1.0/WebRTCAPI.min.js"></script>
+	<script src="https://sqimg.qq.com/expert_qq/tedu/tic/2.1.0/TIC.min.js"></script>
+	<script src="//imgcache.qq.com/open/qcloud/video/vcplayer/TcPlayer-2.3.1.js" charset="utf-8"></script>;
+	<script type="text/javascript" src="static/js/md5.js"></script>
 	<script>
-		var userId="Web_trtc_01";
-		var sdkAppId="1400219876";
-		var roomid="123456";
-		var userSig="eJxlj11PgzAYhe-5FYRrY9oCZTPxAghzU*fUIcPdNFDescrGutJ9Gv*7EZdI4rl9npyT82mYpmnFj9PrjPPNrtZMnyRY5o1pIevqD0opCpZpZqviH4SjFApYttCgWohd1yUIdR1RQK3FQlyMGeRMK80Zwh2pKSrWLv22OAgR3O95tKuIsoXj6C0cDQfLpnCCip*j8PyeQGnPyvv0xZviOJVV1l8H9WkF5cfdk*eLyLed4IBpsj3Uz-OH-SCfjKnPQ72Nyeg491MKq1xGyeR1uCxvO5NarOFyiyJKnZ7ndegeVCM2dSsQhF1MbPQTy-gyvgHLKF9x";
-//		var userSig="eJxlj8FOg0AURfd8BWFt9M3QgWLiQqE1YG2lWG3ZTBAeZLQCDlPaYvx3IzaRxLs9J-fmfmq6rhuPs*g8SdNqVyqujjUa*qVugHH2B*taZDxR3JTZP4iHWkjkSa5Q9pAwxijA0BEZlkrk4mQ84wtXUqUc6EBqsjfeL-22jAAocca2NVRE0cP7ycr1Q6-ZzrrCN4-x*rVbLnAxX0KBcxJ7e2u6GaNbre1gEjqR5YV*4bFxl9BShrd3eeBtp0-xjh3YR1OPYPNw00ZusIpD5pbtxfXVYFKJdzzdssByTGKTAW1RNqIqe4ECYYSa8BND*9K*AWNrXl8_";
-//		var boardSdk = new BoardSDK({
-//			id:'board',
-//			conf_id:'123456',
-//			user:sdkAppId,
-//			tlsData:{
-//				sdkAppId:sdkAppId,
-//				identifier:userId,
-//				userSig:userSig
-//			}
-//		});
-		WebRTCAPI.fn.detectRTC({}, function(info){
-			if( !info.support ) {
-		       return alert('不支持WebRTC')
-		    }
-		})
-		function startRTC(){
-			var checkAnchor=$(".check_anchor")[0].checked;
-			console.log(checkAnchor)
-			var anchor="audience";
-			if(checkAnchor){
-				anchor="anchor";
-				userId="Web_trtc_02";
-				userSig="eJxlj8FOg0AURfd8BWFt9M3QgWLiQqE1YG2lWG3ZTBAeZLQCDlPaYvx3IzaRxLs9J-fmfmq6rhuPs*g8SdNqVyqujjUa*qVugHH2B*taZDxR3JTZP4iHWkjkSa5Q9pAwxijA0BEZlkrk4mQ84wtXUqUc6EBqsjfeL-22jAAocca2NVRE0cP7ycr1Q6-ZzrrCN4-x*rVbLnAxX0KBcxJ7e2u6GaNbre1gEjqR5YV*4bFxl9BShrd3eeBtp0-xjh3YR1OPYPNw00ZusIpD5pbtxfXVYFKJdzzdssByTGKTAW1RNqIqe4ECYYSa8BND*9K*AWNrXl8_";
-			}
-			initRTC({
-		        "userId": userId,
-		        "userSig": userSig,
-		        "sdkappid": sdkAppId,
-		        "accountType": 1, // 随便传一个值，现在没有啥用处
-		        "roomid": roomid,
-		        anchor:anchor
-		    });
-		}
-		function initRTC(opts){
-			window.RTC = new WebRTCAPI({
-				userId: opts.userId,
-		        userSig: opts.userSig,
-		        sdkAppId: opts.sdkappid,
-		        accountType: opts.accountType
-			},function(){
-				RTC.enterRoom({
-		            roomid: opts.roomid * 1,
-		            privateMapKey: opts.privateMapKey,
-		            appScene:'Live',
-		            role: opts.anchor,
-		        }, function (info) {
-		        	console.log(info,77)
-		        	RTC.getLocalStream({
-		        		audio:true,
-                		video:true
-		        	},function(info){
-				    	RTC.startRTC({
-		                    stream: info.stream,
-		                    role: opts.anchor //audience anchor
-		                },function(info){
-		                	console.log(info,55)
-		                },function(err){
-		                	console.log(err,66)
-		                });
-				    });
-		        }, function (error) {
-		            console.error("init error", error)
-		        });
-			})
-			// 远端流新增/更新
-    		RTC.on("onRemoteStreamUpdate", onRemoteStreamUpdate)
-			RTC.on("onLocalStreamAdd", onLocalStreamAdd);
-			RTC.on( 'onStreamNotify' , function( info ){ 
-				console.log(info,33)
-			})
-			// 重复登录被T
-    		RTC.on("onKickout", onKickout)
-    		// 服务器超时
-    		RTC.on("onRelayTimeout", onRelayTimeout)
-    		RTC.on("onErrorNotify", function (info) {
-		        console.error(info)
-		        if (info.errorCode === RTC.getErrorCode().GET_LOCAL_CANDIDATE_FAILED) {
-		            // alert( info.errorMsg )
-		        }
-		    });
-		}
-		function onLocalStreamAdd(info) {
-		    console.log(info,11)
-		    if (info.stream && info.stream.active === true) {
-		        var id = "local",isLocal=false;
-		        var video = document.getElementById(id);
-		        if (!video) {
-		            var videoDiv = document.createElement("div");
-				    videoDiv.innerHTML = '<video id="' + id + '" autoplay controls ' + (isLocal ? 'muted' : '') + ' playsinline ></video>';
-				    document.querySelector("#remote-video-wrap").appendChild(videoDiv);
-		        }
-		        var video = document.getElementById(id)
-		        video.srcObject = info.stream;
-		        video.muted = true;
-		        video.autoplay = true;
-		        video.playsinline = true;
-		        video.width=300;
-		    }
-		}
-		function onRemoteStreamUpdate(info) {
-		    console.log(info,11)
-		    if (info.stream && info.stream.active === true) {
-		        var id = "local2",isLocal=false;
-		        var video = document.getElementById(id);
-		        if (!video) {
-		            var videoDiv = document.createElement("div");
-				    videoDiv.innerHTML = '<video id="' + id + '" autoplay controls ' + (isLocal ? 'muted' : '') + ' playsinline ></video>';
-				    document.querySelector("#remote-video-wrap2").appendChild(videoDiv);
-		        }
-		        var video = document.getElementById(id)
-		        video.srcObject = info.stream;
-		        video.muted = true;
-		        video.autoplay = true;
-		        video.playsinline = true;
-		        video.width=300;
-		    }
-		}
-		function onKickout() {
-		    alert("重复登录!");
-		}
-		function onRelayTimeout(msg) {
-		    alert("onRelayTimeout!" + (msg ? JSON.stringify(msg) : ""));
+		var user = {
+			"sdkappid": 1400127140,
+			"users": [{
+				"userId": "userid_ybinu_1",
+				"userToken": "eJxNjtFugjAUht*FW5bZllm3JV50cyIDFlBnjDFpKtRaGYVAcbBl776OaObVSb7vnP8-39YyWNyyJCkapanuSm49WsC66bFMudJyL3llYFPzSqa020nVUHjeYGVpGNPUqdKrwzrNaK8Mg3cAQDQy4yx5W8qKU7bXfS5EDxiAizzxqpaFMhwBOITIAeBfapn-vQeHGIwcjAC61ElhcPgSP3vE28WRK8h2kEVB*-kuTrN5oLD9*uXbm4XtbgcNFEd1nBQi9IkkvrdJ5rF-yKfifrWeMTcXHcaCfXBvXT9N3qZZtPS7NjwEZDy2fn4Be9tbrA__"
+			}, {
+				"userId": "userid_ybinu_2",
+				"userToken": "eJxNjlFPwjAUhf-LXjVy27KiJjxsy3AGFyQiMwtJM7sOLspY2g6cxv9uXSD6dJLvu-fkfHmLh6erQsp9W1thu0Z5tx54lz3GUtUWK1TawdYojaXoXrFuBT1dFE3jWGEF0*W-R1O*iV45RoYAhI5cnKT6aFArUVS27yX0hgOc5UFpg-vacQrEJ5QB-EmLu995xOcwYpzCeYXBtcNpPI-uJ2Q1IBdwPVtEFX95jJOQWd83sAzCfDMNmXo-PkfTTKZmvQkwSNOkHX4uVVZmSTphSs5QbvOjzLcdj4PdahC0d3gwhGV2Ph573z8V7Vqj"
+			}, {
+				"userId": "userid_ybinu_3",
+				"userToken": "eJxNjt1Og0AQRt*FW43OLoVaEy8owQRDTa3Q3phsKCwwbvnp7kIlpu-uStro1STnzHzffFtx9H6XZlnbN5rpsePWowXW7YQx543GArk0sFdcYs7GPTY9sy8badcZlmpmy-zfocoFm5RhZAZA6NyMi*RfHUrO0kJPuYQuXICrHLhU2DaGUyAOoTbAn9RY-75HHBfmtkuBXuuwNHgVJH7oVZH0d6-bQe5X8XDznEQvcnOo3ppiWSThxz2W1WLMPsPZSS09DDwl*7TuN2uS*0LwIHPGdjwIEYaVykCq7fFUxrvj2q4fxJN1-gGK1l2o"
+			}, {
+				"userId": "userid_ybinu_4",
+				"userToken": "eJxNjtFOgzAUht*Fa6OnpQM18QI2NDqGhrGpxKTBtWMNyrpSypjx3a1ki16d5PvO*f-z5WTx-LxYrbZtranuJXeuHXDOBiwYr7VYC64sbBuuBKP9u6hbSo4bhZSWFZq6iv07bFhFB2UZIgAI*3YcJd9LoTgt1nrIRfjKAzhJw1UjtrXlGNAIYRfgT2rx*fseGnngux4GfKoTpcWzaDG*v4VdyLO7iPvzPkiTuFCxQTJ9XWKGX0xukg-SPk2TpF0uAhEF3eTtoiJumD*MD8*Hy9SbSnisQi9H3QxlpoxJ15S7jdxMZHXjfP8AGhpbYw__"
+			}, {
+				"userId": "userid_ybinu_5",
+				"userToken": "eJxNjl1PgzAUhv8LtzPSjwHOxAt0KAsfapwzW0iaSgupTsZKWwfG-24lW-TqJM9zzvueL2eZPp3TstzpRhHVt9y5dIBzNmLBeKNEJbi0UHdcCkb6V9Fo4h03aNtaRhXBkv077Ng7GZVlcAoARIEdR8kPrZCc0EqNuRDNfABO0nDZiV1jOQLQgwgD8CeV*Ph9D3o*CLCPADrVidriLHq*WcTribo4hBscQJPLPY10uRwGlsw8bei8cAv3bVuV*Uos9GMeiijcw5cq3dybunDN9V221p*Ib3GP8jl7yCaJiW-9VZwmA56G9ZXz-QP6i1vd"
+			}]
 		}
 	</script>
+	<script>
+		$("#sdkappid").val(user["sdkappid"]);
+		var userId = user["users"][0]["userId"];
+		var roomid = "123456";
+		var userSig = user["users"][0]["userToken"];
+		//		var userSig="eJxlj8FOg0AURfd8BWFt9M3QgWLiQqE1YG2lWG3ZTBAeZLQCDlPaYvx3IzaRxLs9J-fmfmq6rhuPs*g8SdNqVyqujjUa*qVugHH2B*taZDxR3JTZP4iHWkjkSa5Q9pAwxijA0BEZlkrk4mQ84wtXUqUc6EBqsjfeL-22jAAocca2NVRE0cP7ycr1Q6-ZzrrCN4-x*rVbLnAxX0KBcxJ7e2u6GaNbre1gEjqR5YV*4bFxl9BShrd3eeBtp0-xjh3YR1OPYPNw00ZusIpD5pbtxfXVYFKJdzzdssByTGKTAW1RNqIqe4ECYYSa8BND*9K*AWNrXl8_";
+		var BoraDObj = {
+			jojnBoard: function() {
+				$("#board").show();
+				var sdkAppId = $("#sdkappid").val();
+				this.checkAnchor = $(".check_anchor")[0].checked;
+				if(this.checkAnchor) {
+					userId = user["users"][1]["userId"];
+					userSig = user["users"][1]["userToken"];
+				}
+				window.tic = new TIC({});
+				tic.init(sdkAppId, res => {
+					if(res.code) {
+						alert('初始化失败，code:' + res.code + ' msg:' + res.desc);
+					} else {
+						this.login();
+					}
+				});
+			},
+			login: function() {
+				tic.login({
+					userId: userId,
+					userSig: userSig
+				}, (res) => {
+					if(res.code) {
+						console.warn(res)
+						return alert("登录失败")
+					}
+					this.addTICStatusListener();
+					if(this.checkAnchor) {
+						// 老师就创建课堂
+						this.createClassroom();
+					} else { // 如果是学生
+						// 有了课堂后就直接加入
+						this.joinClassroom();
+					}
+				})
+			},
+			addTICStatusListener: function() {
+				tic.addTICStatusListener({
+					onTICForceOffline: () => {
+						alert(`其他地方登录，被T了`);
+						// this.step = 'first';
+					}
+				});
+			},
+			createClassroom: function() {
+				tic.createClassroom(roomid, (res) => {
+					if(res.code) {
+						if(res.code == 10021) {
+							return this.joinClassroom();
+						}
+						alert('创建课堂失败');
+						console.error(res);
+					} else {
+						console.log('创建课堂成功');
+						this.checkAnchor && this.joinClassroom();
+					}
+				});
+			},
+			joinClassroom: function() {
+				tic.joinClassroom(roomid, {}, {
+					id: 'board',
+					boardContentFitMode: 2,
+				}, res => {
+					console.log('+++', res)
+					if(res.code) {
+						alert('加入课堂失败');
+						console.error(res);
+					} else {
+						window.teduBoard = this.teduBoard = tic.getBoardInstance();
+						console.log('-------------', teduBoard)
+						teduBoard.board.canDraw = this.checkAnchor; //是否可以涂鸦
+						this.initBoardEvent();
+						window.TRTC = this.TRTC = tic.getWebRTCInstance();
+						this.initTRTCEvent();
+						console.log('加入课堂成功');
+						var bizid = "53193";
+						var streamid = MD5(roomid + "_" + userId + "_" + "main");
+						console.log('flv地址' + 'https://' + bizid + '.liveplay.myqcloud.com/live/' + bizid + '_' + streamid + ".flv");
+					}
+				});
+			},
+			// 监听白板事件（按需监听）
+			initBoardEvent() {
+				window.teduBoard = this.teduBoard;
+
+				// 撤销状态改变
+				teduBoard.on(TEduBoard.EVENT.TEB_OPERATE_CANUNDO_STATUS_CHANGED, (enable) => {
+					console.log('======================:  ', 'TEB_OPERATE_CANUNDO_STATUS_CHANGED', enable ? '可撤销' : '不可撤销');
+				});
+
+				// 重做状态改变
+				teduBoard.on(TEduBoard.EVENT.TEB_OPERATE_CANREDO_STATUS_CHANGED, (enable) => {
+					console.log('======================:  ', 'TEB_OPERATE_CANREDO_STATUS_CHANGED', enable ? '可恢复' : '不可恢复');
+				});
+
+				// 新增白板
+				teduBoard.on(TEduBoard.EVENT.TEB_ADDBOARD, (boardId, fid) => {
+					console.log('======================:  ', 'TEB_ADDBOARD', ' boardId:', boardId, ' fid:', fid);
+					this.proBoardData();
+				});
+
+				// 白板同步数据回调(收到该回调时需要将回调数据通过信令通道发送给房间内其他人，接受者收到后调用AddSyncData接口将数据添加到白板以实现数据同步)
+				// TIC已经处理好了，可忽略该事件
+				teduBoard.on(TEduBoard.EVENT.TEB_SYNCDATA, (data) => {
+					console.log('======================:  ', 'TEB_SYNCDATA');
+				});
+
+				// 收到白板初始化完成事件后，表示白板已处于正常工作状态（此时白板为空白白板，历史数据尚未拉取完成）
+				teduBoard.on(TEduBoard.EVENT.TEB_INIT, () => {
+					console.log('======================:  ', 'TEB_INIT');
+				});
+
+				teduBoard.on(TEduBoard.EVENT.TEB_HISTROYDATA_SYNCCOMPLETED, () => {
+					console.log('======================:  ', 'TEB_HISTROYDATA_SYNCCOMPLETED');
+				});
+
+				// 白板错误回调
+				teduBoard.on(TEduBoard.EVENT.TEB_ERROR, (code, msg) => {
+					console.log('======================:  ', 'TEB_ERROR', ' code:', code, ' msg:', msg);
+				});
+
+				// 白板警告回调
+				teduBoard.on(TEduBoard.EVENT.TEB_WARNING, (code, msg) => {
+					console.log('======================:  ', 'TEB_WARNING', ' code:', code, ' msg:', msg);
+				});
+
+				// 图片状态加载回调
+				teduBoard.on(TEduBoard.EVENT.TEB_IMAGE_STATUS_CHANGED, (status, data) => {
+					console.log('======================:  ', 'TEB_IMAGE_STATUS_CHANGED', ' status:', status, ' data:', data);
+				});
+
+				// 删除白板页回调
+				teduBoard.on(TEduBoard.EVENT.TEB_DELETEBOARD, (boardId, fid) => {
+					console.log('======================:  ', 'TEB_DELETEBOARD', ' boardId:', boardId, ' fid:', fid);
+					this.proBoardData();
+				});
+
+				// 跳转白板页回调
+				teduBoard.on(TEduBoard.EVENT.TEB_GOTOBOARD, (boardId, fid) => {
+					console.log('======================:  ', 'TEB_GOTOBOARD', ' boardId:', boardId, ' fid:', fid);
+					this.proBoardData();
+				});
+
+				// 增加H5动画PPT文件回调
+				teduBoard.on(TEduBoard.EVENT.TEB_ADDH5PPTFILE, (fid) => {
+					console.log('======================:  ', 'TEB_ADDH5PPTFILE', ' fid:', fid);
+					this.proBoardData();
+				});
+
+				// 增加文件回调
+				teduBoard.on(TEduBoard.EVENT.TEB_ADDFILE, (fid) => {
+					console.log('======================:  ', 'TEB_ADDFILE', ' fid:', fid);
+					this.proBoardData();
+				});
+
+				// 删除文件回调
+				teduBoard.on(TEduBoard.EVENT.TEB_DELETEFILE, (fid) => {
+					console.log('======================:  ', 'TEB_DELETEFILE', ' fid:', fid);
+					this.proBoardData();
+				});
+
+				// 文件上传状态
+				teduBoard.on(TEduBoard.EVENT.TEB_FILEUPLOADSTATUS, (status, data) => {
+					console.log('======================:  ', 'TEB_FILEUPLOADSTATUS', status, data);
+					if(status === 1) {
+						console.log('上传成功');
+					} else {
+						console.log('上传失败');
+					}
+					document.getElementById('file_input').value = '';
+				});
+
+				// 切换文件回调
+				teduBoard.on(TEduBoard.EVENT.TEB_SWITCHFILE, (fid) => {
+					console.log('======================:  ', 'TEB_SWITCHFILE', ' fid:', fid);
+					this.proBoardData();
+				});
+
+				// 上传背景图片的回调
+				teduBoard.on(TEduBoard.EVENT.TEB_SETBACKGROUNDIMAGE, (fileName, fileUrl, userData) => {
+					console.log('======================:  ', 'TEB_SETBACKGROUNDIMAGE', '  fileName:', fileName, '  fileUrl:', fileUrl, ' userData:', userData);
+				});
+
+				// 文件上传进度
+				teduBoard.on(TEduBoard.EVENT.TEB_FILEUPLOADPROGRESS, (data) => {
+					console.log('======================:  ', 'TEB_FILEUPLOADPROGRESS:: ', data);
+					console.log('上传进度:' + parseInt(data.percent * 100) + '%');
+				});
+
+				// H5背景加载状态
+				teduBoard.on(TEduBoard.EVENT.TEB_H5BACKGROUND_STATUS_CHANGED, (status, data) => {
+					console.log('======================:  ', 'TEB_H5BACKGROUND_STATUS_CHANGED:: status:', status, '  data:', data);
+				});
+			},
+			proBoardData(data) {
+				this.currentFile = this.teduBoard.getCurrentFile();
+				this.boardFileGroup = this.teduBoard.getFileInfoList();
+				var currentBoard = this.teduBoard.getCurrentBoard();
+
+				var boards = this.teduBoard.getFileBoardList(this.currentFile);
+				this.boardData = {};
+				this.boardData.page = {
+					current: boards.indexOf(currentBoard) + 1,
+					total: boards.length
+				}
+			},
+			initTRTCEvent: function() {
+				this.TRTC.on('onLocalStreamAdd', (data) => {
+					if(data && data.stream) {
+						var localVideoEl = document.getElementById('local_video');
+						if(!localVideoEl) {
+							localVideoEl = document.createElement('video');
+							localVideoEl.id = 'local_video';
+							localVideoEl.class = "col-md-1";
+							document.querySelector("#video_wrap").insertBefore(localVideoEl, null);
+						}
+						localVideoEl.muted = true;
+						localVideoEl.autoplay = true;
+						localVideoEl.controls = true;
+						localVideoEl.playsinline = true
+						localVideoEl.srcObject = data.stream;
+						this.isPushing = 1; // 正在推流
+						console.log('WebRTC接收到本地流');
+					}
+				})
+
+				this.TRTC.on('onRemoteStreamUpdate', (data) => {
+					var userVideoEl = document.getElementById(data.videoId);
+					if(!userVideoEl) {
+						userVideoEl = document.createElement('video');
+						userVideoEl.id = data.videoId;
+						userVideoEl.class = "col-md-1";
+						document.querySelector("#video_wrap").appendChild(userVideoEl);
+					}
+					userVideoEl.autoplay = true;
+					userVideoEl.controls = true;
+					userVideoEl.playsinline = true
+					userVideoEl.srcObject = data.stream;
+
+					console.log('WebRTC接收到远端流');
+				})
+
+				this.TRTC.on('onRemoteStreamRemove', (data) => {
+					var userVideoEl = document.getElementById(data.videoId);
+					if(userVideoEl) {
+						userVideoEl.remove();
+					}
+					console.log('WebRTC 远端流断开');
+				})
+
+				this.TRTC.on('onWebSocketClose', (data) => {
+					console.log('WebRTC WebSocket 断开');
+				})
+
+				this.TRTC.on('onRelayTimeout', (data) => {
+					console.log('WebRTC 超时');
+				})
+
+				this.TRTC.on('onStreamNotify', (data) => {
+					console.log('==================== onStreamNotify==', data);
+				})
+			},
+			startRTC: function() {
+				var WebRTC = this.TRTC;
+				WebRTC.getLocalStream({
+					audio: true,
+					video: true,
+					attributes: {
+						width: 300,
+						height: 300
+					}
+				}, (data) => {
+					this.isPushCamera = true;
+					if(WebRTC.global.localStream && WebRTC.global.localStream.active) {
+						WebRTC.updateStream({
+							role: 'screen',
+							stream: data.stream
+						}, () => {
+							// 成功
+						}, (error) => {
+							console.warn(`更新流失败，${error}`);
+						});
+					} else {
+						WebRTC.startRTC({
+							stream: data.stream,
+							role: this.checkAnchor ? 'anchor' : 'audience'
+						}, (data) => {
+							// 成功
+						}, (error) => {
+							console.warn(`推流失败, ${error}`);
+						});
+					}
+				}, (error) => {
+					console.warn(`获取本地流失败, ${JSON.stringify(error)}`);
+				});
+			},
+			stopPush: function() {
+				var WebRTC = tic.getWebRTCInstance();
+				WebRTC.stopRTC({}, () => {
+					document.querySelector('#local_video').srcObject = null;
+				});
+			},
+		}
+		$("#urls_btn").on("click", function() {
+			if($("#urls").val() == '') {
+				return alert("请输入地址")
+			}
+			var player = new TcPlayer('id_test_video', {
+				"m3u8": $("#urls").val(), //请替换成实际可用的播放地址
+				"autoplay": true, //iOS下safari浏览器，以及大部分移动端浏览器是不开放视频自动播放这个能力的
+				"poster": "http://www.test.com/myimage.jpg",
+				"width": '480', //视频的显示宽度，请尽量使用视频分辨率宽度
+				"height": '320', //视频的显示高度，请尽量使用视频分辨率高度
+				listener: function(msg) {
+					console.error(msg)
+				}
+			});
+		})
+	</script>
+
 </html>

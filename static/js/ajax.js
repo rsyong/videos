@@ -46,7 +46,7 @@ function ajax(option) {
   var xhr = new XMLHttpRequest();
   xhr.timeout = 20 * 1000;
   xhr.open(option.type || 'GET', option.url, true);
-  xhr.responseType = `${option.dataType}`;
+  xhr.responseType = option.dataType;
 
   xhr.setRequestHeader('Content-type', headerMap[option.dataType]);
 

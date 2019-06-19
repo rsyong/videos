@@ -6,16 +6,11 @@
     <title>云上课堂</title>
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE10" > 
     <link href="https://www.xueerqin.net/Images/logo.ico" rel="Shortcut Icon" type="text/css">
-    <link rel="stylesheet" href="/themes/static/css/buttons.css" />
-    <link rel="stylesheet" href="/themes/static/css/video-js.min.css" />
-    <link rel="stylesheet" href="/themes/static/css/app.css" />
-    <script type="text/javascript" src="/themes/static/js/nePublisher.js" ></script>
-	<script src="/themes/static/js/video.min.js"></script>
-	<!--<link rel="stylesheet" href="static/css/buttons.css" />
-    <link rel="stylesheet" href="static/css/video-js.min.css" />
-    <link rel="stylesheet" href="static/css/app.css" />
-    <script type="text/javascript" src="static/js/nePublisher.js" ></script>
-	<script src="static/js/video.min.js"></script>-->
+    <link rel="stylesheet" href="https://lyg.goluckin.com/themes/static/css/buttons.css" />
+    <link rel="stylesheet" href="https://lyg.goluckin.com/themes/static/css/video-js.min.css" />
+    <link rel="stylesheet" href="https://lyg.goluckin.com/themes/static/css/app.css" />
+    <script type="text/javascript" src="https://lyg.goluckin.com/themes/static/js/nePublisher.js" ></script>
+	<script src="https://lyg.goluckin.com/themes/static/js/video.min.js"></script>
 </head>
 
 <body>
@@ -92,20 +87,11 @@
                 <div class="content-left-bottom back mt-10 flex flex-column">
                     <div>
                         <div class="flex just-between gs-userlist-count color-fff">
-                            <div>在线学生列表</div>
+                            <div>在线人员列表<span class="online_num"> (0人)</span></div>
                         </div>
                     </div>
                     <div class="flex1 subList-online">
                         <ul id="subList-online">
-                            <!--<li class="flex just-between align-center">
-                                <div class="flex1"><img src="http://lyg.goluckin.com/themes/v2/static/images/17yk.png" />asd</div>
-                                <div>
-                                	<div class="flex">
-                                		<div class="sn-btn" title="禁言">禁言</div>
-                                		<div class="sn-btn" title="踢出">踢出</div>
-                                	</div>
-                                </div>
-                            </li>-->
                         </ul>
                     </div>
                 </div>
@@ -189,25 +175,34 @@
 	<input id="roleCode" type="hidden" value="<?php echo $userinfo['roleCode']?>">
 	<input id="liveid" type="hidden" value="<?php echo $liveid?>">
 </body>
-<script type="text/javascript" src="/themes/static/js/jquery.min.js" ></script>
-<script type="text/javascript" src="/themes/static/WhiteBoardSDK/NIM_Web_NIM_v6.4.0.js" ></script>
-<script type="text/javascript" src="/themes/static/WhiteBoardSDK/NIM_Web_WhiteBoard_v6.4.0.js" ></script>
-<script type="text/javascript" src="/themes/static/WhiteBoardSDK/DrawPlugin.js" ></script>
-<script type="text/javascript" src="/themes/static/js/md5.js" ></script>
-<script type="text/javascript" src="/themes/static/js/ajax.js" ></script>
-<script type="text/javascript" src="/themes/static/layerSDK/layer.js" ></script>
-<script type="text/javascript" src="/themes/static/js/common.js?v=1.1" ></script>
-<!--<script type="text/javascript" src="static/js/jquery.min.js" ></script>
-<script type="text/javascript" src="static/WhiteBoardSDK/NIM_Web_NIM_v6.4.0.js" ></script>
-<script type="text/javascript" src="static/WhiteBoardSDK/NIM_Web_WhiteBoard_v6.4.0.js" ></script>
-<script type="text/javascript" src="static/WhiteBoardSDK/DrawPlugin.js" ></script>
-<script type="text/javascript" src="static/js/md5.js" ></script>
-<script type="text/javascript" src="static/js/ajax.js" ></script>
-<script type="text/javascript" src="static/layerSDK/layer.js" ></script>
-<script type="text/javascript" src="static/js/common.js" ></script>-->
+<script type="text/javascript" src="https://lyg.goluckin.com/themes/static/js/jquery.min.js" ></script>
+<script type="text/javascript" src="https://lyg.goluckin.com/themes/static/WhiteBoardSDK/NIM_Web_NIM_v6.4.0.js" ></script>
+<script type="text/javascript" src="https://lyg.goluckin.com/themes/static/WhiteBoardSDK/NIM_Web_WhiteBoard_v6.4.0.js" ></script>
+<script type="text/javascript" src="https://lyg.goluckin.com/themes/static/WhiteBoardSDK/DrawPlugin.js" ></script>
+<script type="text/javascript" src="https://lyg.goluckin.com/themes/static/js/md5.js" ></script>
+<script type="text/javascript" src="https://lyg.goluckin.com/themes/static/js/ajax.js" ></script>
+<script type="text/javascript" src="https://lyg.goluckin.com/themes/static/layerSDK/layer.js" ></script>
+<script type="text/javascript" src="https://lyg.goluckin.com/themes/static/js/common.js?v=1.1" ></script>
 <script type="text/javascript">
-//	"username=350111201201101097; roleCode=Student; Token=716b545a"
     $(function() {
+    	if(sessionStorage.test=="t"){
+    		$('#roomid').val("f662d2a3e6574e0c8323f745414eb211");
+    		$('#user_id').val("14ea81d3ada5490cb1b2d128d109bca0");
+    		$('#tid').val("14ea81d3ada5490cb1b2d128d109bca0");
+    		$('#roleName').val("教师");
+    		$('#roleCode').val("Teacher");
+    		$('#liveid').val("2ef7ac7f7292d5b6a8974dee9efc8844");
+    		$("#Name").val("黄鑫文");
+    	}
+    	if(sessionStorage.test=="s"){
+    		$('#roomid').val("f662d2a3e6574e0c8323f745414eb211");
+    		$('#user_id').val("14a10b2857644588aa2c3a9649dd29cb");
+    		$('#tid').val("14ea81d3ada5490cb1b2d128d109bca0");
+    		$('#roleName').val("学生");
+    		$('#roleCode').val("Student");
+    		$('#liveid').val("2ef7ac7f7292d5b6a8974dee9efc8844");
+    		$("#Name").val("刘玉凤");
+    	}
         var roomid = $('#roomid').val(); //房间号
         var userid = $('#user_id').val();//学生id
         var techerid=$('#tid').val();//教师id
@@ -247,6 +242,11 @@
         	$(".s-list-hide").hide();
         	$(".admins").hide();
         	$("#copyValue").val("rtmp://streamsrv.xueerqin.net/hls/"+userid);
+        }
+        if(isRoleNameZ){
+        	$("#Revoke").remove();
+        	$("#wb_clear").remove();
+        	$("#endclass").hide();
         }
         fetch(); //初始化聊天列表
         fetchStuent(); //初始化学生直播窗口
@@ -367,6 +367,8 @@
             }, function(res) {
                 typeof res == "string" && (res = JSON.parse(res));
                 var html = "";
+                if(!res.data) return;
+                $(".online_num").text("("+res.data.length+"人)");
                 res.data&&res.data.forEach(function(item) {
                 	if(item.uid==userid){
                 		if(item.status.indexOf("1")>-1){
@@ -391,11 +393,11 @@
                             +'</li>';
                 })
 
-				$.get(API+"/userstatus/useronline", {
-                	roomid: roomid
-            	},function(){
-            		
-            	})
+//				$.get(API+"/userstatus/useronline", {
+//              	roomid: roomid
+//          	},function(){
+//          		
+//          	})
                 $("#subList-online").html(html);
                 if(isRoleName || isRoleNameZ){
                 	$("#subList-online li").on("click", function(e) {
@@ -730,11 +732,37 @@
 		        })
         	})
 	    }
+	    function bindEvent(){
+	    	wb.on('signalClosed', function(obj) {
+	            console.error('on signalClosed', obj);
+	        });
+	        wb.on('error', function(obj) {
+	            console.error('on error', obj);
+	        });
+	        wb.on('joinChannel', function(obj) {
+	            if(!isRoleName){
+		    		console.log("请求历史数据",TeacherAccout)
+		    		setTimeout(function(){
+		    			drawPlugin.syncRequest(TeacherAccout);
+		    		},500)
+		    	}
+	        })
+	        wb.on('data', (obj) => {
+			  	drawPlugin.act({ account: obj.account, data: obj.data })
+			});
+	        wb.on('leaveChannel', function(obj) {
+	            console.log('onLeaveChannel', obj);
+	        });
+	        wb.on('control', function(obj) {
+	            console.log('onControl', obj);
+	        });
+	    }
 	    function initWB(){
 	    	wb = WhiteBoard.getInstance({
 				nim:nim,
 				debug:true
 			})
+	    	bindEvent();
 	    	drawPlugin = new DrawPlugin(document.getElementById("wbord"), {
 			  UID: wb.getAccount(),
 			  nim: nim  // nim实例
@@ -748,17 +776,6 @@
 			  let { toAccount = 0, data } = obj
 			  wb.sendData({ toAccount, data })
 			})
-			
-			wb.on('data', (obj) => {
-			  drawPlugin.act({ account: obj.account, data: obj.data })
-			});
-			wb.on('joinChannel', function(obj) {
-	            if(!isRoleName){
-		    		console.log("请求历史数据",TeacherAccout)
-		    		drawPlugin.syncRequest(TeacherAccout);
-		    		return;
-		    	}
-	        })
 			nim.on('notifyTransLog', function(data) {
 	            console.log('notifyTransLog', data);
 	            // data.state = WhiteBoardState.serializeFileStateMap['TRANSCOMPLETE'];
@@ -772,7 +789,7 @@
 	    	ajax({
           		type:"POST",
           		url:wbAPI+"/createDemoUser",
-          		dataType: "form",
+//        		dataType: "form",
           		headers:{
 					appkey:appkey
 				},

@@ -1,0 +1,175 @@
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title></title>
+	</head>
+	<body>
+		<div id="board" style="border: 1px solid #000;width: 500px;height: 500px;position: relative;display: none;"></div>
+		<button onclick="startRTC()">开始直播</button> <input type="checkbox" value="是否主播" class="check_anchor" />是否主播<br /><br />
+		<button onclick="jojnBoard()">加入白板</button> <input type="checkbox" value="是否主播" class="check_anchor" />是否主播
+		<div id="remote-video-wrap">
+
+        </div>
+        <div id="remote-video-wrap2">
+
+        </div>
+	</body>
+	<!-- COS SDK -->
+	<script src="https://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+	<script src="https://cdn.bootcss.com/axios/0.19.0-beta.1/axios.js"></script>
+	<script src="https://sqimg.qq.com/expert_qq/webim/1.7.1/webim.min.js"></script>
+	<script src="https://sqimg.qq.com/expert_qq/cos/5.0.5/cos.mini.js"></script>
+	<!-- 白板SDK -->
+	<script src="https://sqimg.qq.com/expert_qq/tedu/board/2.1.0/TEduBoard.min.js"></script>
+	<script src="https://sqimg.qq.com/expert_qq/webrtc/3.1.0/WebRTCAPI.min.js"></script>
+	<script src="https://sqimg.qq.com/expert_qq/tedu/tic/2.1.0/TIC.min.js"></script>
+	<script>
+		var userId="Web_trtc_01";
+		var sdkAppId="1400219876";
+		var roomid="123456";
+		var userSig="eJxlj11PgzAYhe-5FYRrY9oCZTPxAghzU*fUIcPdNFDescrGutJ9Gv*7EZdI4rl9npyT82mYpmnFj9PrjPPNrtZMnyRY5o1pIevqD0opCpZpZqviH4SjFApYttCgWohd1yUIdR1RQK3FQlyMGeRMK80Zwh2pKSrWLv22OAgR3O95tKuIsoXj6C0cDQfLpnCCip*j8PyeQGnPyvv0xZviOJVV1l8H9WkF5cfdk*eLyLed4IBpsj3Uz-OH-SCfjKnPQ72Nyeg491MKq1xGyeR1uCxvO5NarOFyiyJKnZ7ndegeVCM2dSsQhF1MbPQTy-gyvgHLKF9x";
+//		var userSig="eJxlj8FOg0AURfd8BWFt9M3QgWLiQqE1YG2lWG3ZTBAeZLQCDlPaYvx3IzaRxLs9J-fmfmq6rhuPs*g8SdNqVyqujjUa*qVugHH2B*taZDxR3JTZP4iHWkjkSa5Q9pAwxijA0BEZlkrk4mQ84wtXUqUc6EBqsjfeL-22jAAocca2NVRE0cP7ycr1Q6-ZzrrCN4-x*rVbLnAxX0KBcxJ7e2u6GaNbre1gEjqR5YV*4bFxl9BShrd3eeBtp0-xjh3YR1OPYPNw00ZusIpD5pbtxfXVYFKJdzzdssByTGKTAW1RNqIqe4ECYYSa8BND*9K*AWNrXl8_";
+		function jojnBoard(){
+			$("#board").show();
+			var checkAnchor=$(".check_anchor")[1].checked;
+			if(checkAnchor){
+				userId="Web_trtc_02";
+				userSig="eJxlj8FOg0AURfd8BWFt9M3QgWLiQqE1YG2lWG3ZTBAeZLQCDlPaYvx3IzaRxLs9J-fmfmq6rhuPs*g8SdNqVyqujjUa*qVugHH2B*taZDxR3JTZP4iHWkjkSa5Q9pAwxijA0BEZlkrk4mQ84wtXUqUc6EBqsjfeL-22jAAocca2NVRE0cP7ycr1Q6-ZzrrCN4-x*rVbLnAxX0KBcxJ7e2u6GaNbre1gEjqR5YV*4bFxl9BShrd3eeBtp0-xjh3YR1OPYPNw00ZusIpD5pbtxfXVYFKJdzzdssByTGKTAW1RNqIqe4ECYYSa8BND*9K*AWNrXl8_";
+				sdkAppId="1400219877"
+			}
+			window.board = new BoardSDK({
+				id:'board',
+				conf_id:'1150595',
+				user:sdkAppId,
+				canDraw:checkAnchor,
+				tlsData:{
+					sdkAppId:sdkAppId,
+					identifier:userId,
+					userSig:userSig
+				},
+				aspect:false
+			});
+			if(!checkAnchor){
+				board.getBoardData()
+			}
+		}
+		
+		
+		
+		
+		
+		WebRTCAPI.fn.detectRTC({}, function(info){
+			if( !info.support ) {
+		       return alert('不支持WebRTC')
+		    }
+		})
+		function startRTC(){
+			var checkAnchor=$(".check_anchor")[0].checked;
+			console.log(checkAnchor)
+			var anchor="audience";
+			if(checkAnchor){
+				anchor="anchor";
+				userId="Web_trtc_02";
+				userSig="eJxlj8FOg0AURfd8BWFt9M3QgWLiQqE1YG2lWG3ZTBAeZLQCDlPaYvx3IzaRxLs9J-fmfmq6rhuPs*g8SdNqVyqujjUa*qVugHH2B*taZDxR3JTZP4iHWkjkSa5Q9pAwxijA0BEZlkrk4mQ84wtXUqUc6EBqsjfeL-22jAAocca2NVRE0cP7ycr1Q6-ZzrrCN4-x*rVbLnAxX0KBcxJ7e2u6GaNbre1gEjqR5YV*4bFxl9BShrd3eeBtp0-xjh3YR1OPYPNw00ZusIpD5pbtxfXVYFKJdzzdssByTGKTAW1RNqIqe4ECYYSa8BND*9K*AWNrXl8_";
+			}
+			initRTC({
+		        "userId": userId,
+		        "userSig": userSig,
+		        "sdkappid": sdkAppId,
+		        "accountType": 1, // 随便传一个值，现在没有啥用处
+		        "roomid": roomid,
+		        anchor:anchor
+		    });
+		}
+		function initRTC(opts){
+			window.RTC = new WebRTCAPI({
+				userId: opts.userId,
+		        userSig: opts.userSig,
+		        sdkAppId: opts.sdkappid,
+		        accountType: opts.accountType
+			},function(){
+				RTC.enterRoom({
+		            roomid: opts.roomid * 1,
+		            privateMapKey: opts.privateMapKey,
+		            appScene:'Live',
+		            role: opts.anchor,
+		        }, function (info) {
+		        	console.log(info,77)
+		        	RTC.getLocalStream({
+		        		audio:true,
+                		video:true
+		        	},function(info){
+				    	RTC.startRTC({
+		                    stream: info.stream,
+		                    role: opts.anchor //audience anchor
+		                },function(info){
+		                	console.log(info,55)
+		                },function(err){
+		                	console.log(err,66)
+		                });
+				    });
+		        }, function (error) {
+		            console.error("init error", error)
+		        });
+			})
+			// 远端流新增/更新
+    		RTC.on("onRemoteStreamUpdate", onRemoteStreamUpdate)
+			RTC.on("onLocalStreamAdd", onLocalStreamAdd);
+			RTC.on( 'onStreamNotify' , function( info ){ 
+				console.log(info,33)
+			})
+			// 重复登录被T
+    		RTC.on("onKickout", onKickout)
+    		// 服务器超时
+    		RTC.on("onRelayTimeout", onRelayTimeout)
+    		RTC.on("onErrorNotify", function (info) {
+		        console.error(info)
+		        if (info.errorCode === RTC.getErrorCode().GET_LOCAL_CANDIDATE_FAILED) {
+		            // alert( info.errorMsg )
+		        }
+		    });
+		}
+		function onLocalStreamAdd(info) {
+		    console.log(info,11)
+		    if (info.stream && info.stream.active === true) {
+		        var id = "local",isLocal=false;
+		        var video = document.getElementById(id);
+		        if (!video) {
+		            var videoDiv = document.createElement("div");
+				    videoDiv.innerHTML = '<video id="' + id + '" autoplay controls ' + (isLocal ? 'muted' : '') + ' playsinline ></video>';
+				    document.querySelector("#remote-video-wrap").appendChild(videoDiv);
+		        }
+		        var video = document.getElementById(id)
+		        video.srcObject = info.stream;
+		        video.muted = true;
+		        video.autoplay = true;
+		        video.playsinline = true;
+		        video.width=300;
+		    }
+		}
+		function onRemoteStreamUpdate(info) {
+		    console.log(info,11)
+		    if (info.stream && info.stream.active === true) {
+		        var id = "local2",isLocal=false;
+		        var video = document.getElementById(id);
+		        if (!video) {
+		            var videoDiv = document.createElement("div");
+				    videoDiv.innerHTML = '<video id="' + id + '" autoplay controls ' + (isLocal ? 'muted' : '') + ' playsinline ></video>';
+				    document.querySelector("#remote-video-wrap2").appendChild(videoDiv);
+		        }
+		        var video = document.getElementById(id)
+		        video.srcObject = info.stream;
+		        video.muted = true;
+		        video.autoplay = true;
+		        video.playsinline = true;
+		        video.width=300;
+		    }
+		}
+		function onKickout() {
+		    alert("重复登录!");
+		}
+		function onRelayTimeout(msg) {
+		    alert("onRelayTimeout!" + (msg ? JSON.stringify(msg) : ""));
+		}
+	</script>
+</html>
